@@ -19,7 +19,7 @@ This fork uses **`CursorCode*`** commands while the original uses **`ClaudeCode*
 
 ### Different Plugin Sources
 - **Original**: `"coder/claudecode.nvim"`
-- **This Fork**: `"chanwutk/claudecode.nvim"`
+- **This Fork**: `"chanwutk/cursor-cli.nvim"`
 
 Lazy.nvim treats these as separate plugins.
 
@@ -48,7 +48,7 @@ return {
 
   -- This fork for Cursor CLI
   {
-    "chanwutk/claudecode.nvim",
+    "chanwutk/cursor-cli.nvim",
     dependencies = { "folke/snacks.nvim" },
     opts = {
       terminal_cmd = "agent",  -- Explicitly use agent (cursor-cli)
@@ -96,7 +96,7 @@ local use_cursor = true  -- Set to false to use Claude
 
 if use_cursor then
   return {
-    "chanwutk/claudecode.nvim",
+    "chanwutk/cursor-cli.nvim",
     keys = {
       { "<leader>ai", "<cmd>CursorCode<cr>", desc = "Toggle AI" },
     },
@@ -182,7 +182,7 @@ return {
 
   -- Cursor (this fork)
   {
-    "chanwutk/claudecode.nvim",
+    "chanwutk/cursor-cli.nvim",
     dependencies = { "folke/snacks.nvim" },
     config = true,
     keys = {

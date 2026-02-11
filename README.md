@@ -73,7 +73,7 @@ Quick setup for Cursor:
 
 ```lua
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   dependencies = { "folke/snacks.nvim" },
   config = true,  -- Uses 'cursor' by default
   keys = {

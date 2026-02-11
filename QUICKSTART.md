@@ -23,7 +23,7 @@ return {
   
   -- New Cursor Code plugin  
   {
-    "chanwutk/claudecode.nvim",
+    "chanwutk/cursor-cli.nvim",
     name = "cursorcode",  -- IMPORTANT: Different name!
     dependencies = { "folke/snacks.nvim" },
     -- Note: config is optional, commands auto-register!
@@ -198,7 +198,7 @@ return {
   
   -- Cursor Code Integration (Standalone)
   {
-    "chanwutk/claudecode.nvim",
+    "chanwutk/cursor-cli.nvim",
     name = "cursorcode",
     dependencies = { "folke/snacks.nvim" },
     config = function()

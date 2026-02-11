@@ -71,7 +71,7 @@ CHANGES_DIAGRAM.txt   - Visual architecture
 ### Cursor Only
 ```lua
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   dependencies = { "folke/snacks.nvim" },
   config = true,
   keys = {
@@ -96,7 +96,7 @@ return {
   
   -- This fork for Cursor
   {
-    "chanwutk/claudecode.nvim",
+    "chanwutk/cursor-cli.nvim",
     opts = { terminal_cmd = "agent" },
     keys = {
       { "<leader>aa", "<cmd>CursorCode<cr>", desc = "Cursor" },
@@ -213,7 +213,7 @@ test_cursor_integration.sh - Validation script
 ## Next Steps for Users
 
 1. Install cursor-cli and ensure `agent` command works
-2. Install this fork: `"chanwutk/claudecode.nvim"`
+2. Install this fork: `"chanwutk/cursor-cli.nvim"`
 3. Optionally install original: `"coder/claudecode.nvim"`
 4. Configure with different keybindings if using both
 5. Use `:CursorCode` to start using cursor from Neovim

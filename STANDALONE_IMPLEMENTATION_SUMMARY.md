@@ -77,7 +77,7 @@ Repository Structure:
   
   -- Plugin 2: Cursor Code (This Repo)
   {
-    "chanwutk/claudecode.nvim",
+    "chanwutk/cursor-cli.nvim",
     name = "cursorcode",  -- Different identifier
     dependencies = { "folke/snacks.nvim" },
     config = function()

@@ -21,7 +21,7 @@ When you use commands like `:CursorCodeAdd myfile.ts` or `:CursorCodeSend` in vi
 
 ```lua
 {
-  "chanwutk/claudecode.nvim",  -- This fork
+  "chanwutk/cursor-cli.nvim",  -- This fork
   dependencies = { "folke/snacks.nvim" },
   config = true,
   keys = {
@@ -49,7 +49,7 @@ If `agent` is not in your PATH, configure the plugin:
 
 ```lua
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   dependencies = { "folke/snacks.nvim" },
   opts = {
     terminal_cmd = "/path/to/agent",  -- Custom cursor-cli path
@@ -64,7 +64,7 @@ All original configuration options still work:
 
 ```lua
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   dependencies = { "folke/snacks.nvim" },
   opts = {
     terminal_cmd = "agent",            -- CLI command (default for cursor-cli)

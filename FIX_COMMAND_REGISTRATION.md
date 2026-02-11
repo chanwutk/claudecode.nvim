@@ -74,7 +74,7 @@ The plugin was not automatically registering commands unless users explicitly ca
 **Minimal Install (works out of the box):**
 ```lua
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   name = "cursorcode",
   dependencies = { "folke/snacks.nvim" },
 }
@@ -84,7 +84,7 @@ Commands are available: `:CursorCode`, `:CursorCodeAdd`, etc.
 **Custom Config (still supported):**
 ```lua
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   name = "cursorcode",
   dependencies = { "folke/snacks.nvim" },
   config = function()

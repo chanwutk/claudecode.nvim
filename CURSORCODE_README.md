@@ -36,7 +36,7 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
   
   -- New Cursor Code plugin (this repo)
   {
-    "chanwutk/claudecode.nvim",  -- Or your fork
+    "chanwutk/cursor-cli.nvim",  -- Or your fork
     name = "cursorcode",  -- Important: give it a different name
     dependencies = { "folke/snacks.nvim" },
     -- Note: config is optional - commands are auto-registered!
@@ -73,14 +73,14 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
 ```lua
 -- Minimal install (uses all defaults)
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   name = "cursorcode",
   dependencies = { "folke/snacks.nvim" },
 }
 
 -- Custom config
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   name = "cursorcode",
   dependencies = { "folke/snacks.nvim" },
   config = function()
@@ -96,7 +96,7 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
 
 ```lua
 use {
-  'chanwutk/claudecode.nvim',
+  'chanwutk/cursor-cli.nvim',
   as = 'cursorcode',  -- Important: give it a different name
   requires = { 'folke/snacks.nvim' },
   config = function()

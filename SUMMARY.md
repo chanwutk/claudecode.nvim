@@ -93,7 +93,7 @@ Automated validation script that checks:
 ### Installation
 ```lua
 {
-  "chanwutk/claudecode.nvim",  -- This fork
+  "chanwutk/cursor-cli.nvim",  -- This fork
   dependencies = { "folke/snacks.nvim" },
   config = true,  -- Uses "cursor" by default
 }

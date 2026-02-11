@@ -127,7 +127,7 @@ terminal.send_keys(mention_text .. " ")
 ### Installation
 ```lua
 {
-  "chanwutk/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",
   dependencies = { "folke/snacks.nvim" },
   config = true,  -- Defaults to cursor
   keys = {
