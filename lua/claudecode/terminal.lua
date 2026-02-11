@@ -1,4 +1,4 @@
---- Module to manage a dedicated vertical split terminal for Claude Code.
+--- Module to manage a dedicated vertical split terminal for Cursor CLI.
 --- Supports Snacks.nvim or a native Neovim terminal fallback.
 --- @module 'claudecode.terminal'
 
@@ -285,16 +285,16 @@ local function is_terminal_visible(bufnr)
   return bufinfo and #bufinfo > 0 and #bufinfo[1].windows > 0
 end
 
----Gets the claude command string and necessary environment variables
+---Gets the cursor command string and necessary environment variables
 ---@param cmd_args string? Optional arguments to append to the command
 ---@return string cmd_string The command string
 ---@return table env_table The environment variables table
-local function get_claude_command_and_env(cmd_args)
-  -- Inline get_claude_command logic
+local function get_cursor_command_and_env(cmd_args)
+  -- Inline get_cursor_command logic
   local cmd_from_config = defaults.terminal_cmd
   local base_cmd
   if not cmd_from_config or cmd_from_config == "" then
-    base_cmd = "claude" -- Default if not configured
+    base_cmd = "cursor" -- Default if not configured
   else
     base_cmd = cmd_from_config
   end
@@ -346,9 +346,9 @@ local function ensure_terminal_visible_no_focus(opts_override, cmd_args)
 
   -- Terminal is not visible, open it without focus
   local effective_config = build_config(opts_override)
-  local cmd_string, claude_env_table = get_claude_command_and_env(cmd_args)
+  local cmd_string, cursor_env_table = get_cursor_command_and_env(cmd_args)
 
-  provider.open(cmd_string, claude_env_table, effective_config, false) -- false = don't focus
+  provider.open(cmd_string, cursor_env_table, effective_config, false) -- false = don't focus
   return true
 end
 
@@ -503,29 +503,29 @@ function M.open(opts_override, cmd_args)
   get_provider().open(cmd_string, claude_env_table, effective_config)
 end
 
----Closes the managed Claude terminal if it's open and valid.
+---Closes the managed Cursor terminal if it's open and valid.
 function M.close()
   get_provider().close()
 end
 
----Simple toggle: always show/hide the Claude terminal regardless of focus.
+---Simple toggle: always show/hide the Cursor terminal regardless of focus.
 ---@param opts_override table? Overrides for terminal appearance (split_side, split_width_percentage).
----@param cmd_args string? Arguments to append to the claude command.
+---@param cmd_args string? Arguments to append to the cursor command.
 function M.simple_toggle(opts_override, cmd_args)
   local effective_config = build_config(opts_override)
-  local cmd_string, claude_env_table = get_claude_command_and_env(cmd_args)
+  local cmd_string, cursor_env_table = get_cursor_command_and_env(cmd_args)
 
-  get_provider().simple_toggle(cmd_string, claude_env_table, effective_config)
+  get_provider().simple_toggle(cmd_string, cursor_env_table, effective_config)
 end
 
 ---Smart focus toggle: switches to terminal if not focused, hides if currently focused.
 ---@param opts_override table (optional) Overrides for terminal appearance (split_side, split_width_percentage).
----@param cmd_args string|nil (optional) Arguments to append to the claude command.
+---@param cmd_args string|nil (optional) Arguments to append to the cursor command.
 function M.focus_toggle(opts_override, cmd_args)
   local effective_config = build_config(opts_override)
-  local cmd_string, claude_env_table = get_claude_command_and_env(cmd_args)
+  local cmd_string, cursor_env_table = get_cursor_command_and_env(cmd_args)
 
-  get_provider().focus_toggle(cmd_string, claude_env_table, effective_config)
+  get_provider().focus_toggle(cmd_string, cursor_env_table, effective_config)
 end
 
 ---Toggle open terminal without focus if not already visible, otherwise do nothing.

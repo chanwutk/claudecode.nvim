@@ -11,20 +11,20 @@ M.defaults = {
   port_range = { min = 10000, max = 65535 },
   auto_start = true,
   terminal_cmd = nil,
-  env = {}, -- Custom environment variables for Claude terminal
+  env = {}, -- Custom environment variables for Cursor terminal
   log_level = "info",
   track_selection = true,
-  -- When true, focus Claude terminal after a successful send while connected
+  -- When true, focus Cursor terminal after a successful send while connected
   focus_after_send = false,
   visual_demotion_delay_ms = 50, -- Milliseconds to wait before demoting a visual selection
   connection_wait_delay = 600, -- Milliseconds to wait after connection before sending queued @ mentions
-  connection_timeout = 10000, -- Maximum time to wait for Claude Code to connect (milliseconds)
+  connection_timeout = 10000, -- Maximum time to wait for Cursor CLI to connect (milliseconds)
   queue_timeout = 5000, -- Maximum time to keep @ mentions in queue (milliseconds)
   diff_opts = {
     layout = "vertical",
     open_in_new_tab = false, -- Open diff in a new tab (false = use current tab)
     keep_terminal_focus = false, -- If true, moves focus back to terminal after diff opens (including floating terminals)
-    hide_terminal_in_new_tab = false, -- If true and opening in a new tab, do not show Claude terminal there
+    hide_terminal_in_new_tab = false, -- If true and opening in a new tab, do not show Cursor terminal there
     on_new_file_reject = "keep_empty", -- "keep_empty" leaves an empty buffer; "close_window" closes the placeholder split
   },
   models = {
@@ -73,7 +73,7 @@ function M.validate(config)
       if cmd_type == "string" and config.terminal.provider_opts.external_terminal_cmd ~= "" then
         assert(
           config.terminal.provider_opts.external_terminal_cmd:find("%%s"),
-          "terminal.provider_opts.external_terminal_cmd must contain '%s' placeholder for the Claude command"
+          "terminal.provider_opts.external_terminal_cmd must contain '%s' placeholder for the Cursor command"
         )
       end
     end
