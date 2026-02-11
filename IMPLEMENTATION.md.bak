@@ -111,7 +111,7 @@ end
 ### How It Works
 
 ```
-User Action: :CursorCodeAdd myfile.ts 10 20
+User Action: :ClaudeCodeAdd myfile.ts 10 20
     ↓
 Plugin: M.send_at_mention("myfile.ts", 9, 19)  # 0-indexed internally
     ↓
@@ -143,7 +143,7 @@ Plugin: Check if cursor terminal exists
 ### Before (Claude Code with WebSocket):
 ```
 1. Plugin starts WebSocket server on port 10000
-2. User runs :CursorCodeAdd file.ts
+2. User runs :ClaudeCodeAdd file.ts
 3. Plugin sends JSON via WebSocket: {"type": "at_mentioned", "filePath": "file.ts"}
 4. Claude Code receives WebSocket message
 5. Claude Code adds @file.ts to context
@@ -151,7 +151,7 @@ Plugin: Check if cursor terminal exists
 
 ### After (Cursor with Direct Input):
 ```
-1. User runs :CursorCodeAdd file.ts
+1. User runs :ClaudeCodeAdd file.ts
 2. Plugin opens cursor terminal (if not open)
 3. Plugin types into terminal: "@file.ts "
 4. Cursor sees the text input

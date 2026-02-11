@@ -294,7 +294,7 @@ local function get_cursor_command_and_env(cmd_args)
   local cmd_from_config = defaults.terminal_cmd
   local base_cmd
   if not cmd_from_config or cmd_from_config == "" then
-    base_cmd = "cursor" -- Default if not configured
+    base_cmd = "agent" -- Default if not configured (cursor-cli command)
   else
     base_cmd = cmd_from_config
   end

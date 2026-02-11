@@ -372,7 +372,7 @@ function M.setup(opts)
   M._create_commands()
 
   vim.api.nvim_create_autocmd("VimLeavePre", {
-    group = vim.api.nvim_create_augroup("CursorCodeShutdown", { clear = true }),
+    group = vim.api.nvim_create_augroup("ClaudeCodeShutdown", { clear = true }),
     callback = function()
       if M.state.server then
         M.stop()
@@ -381,14 +381,14 @@ function M.setup(opts)
         clear_mention_queue()
       end
     end,
-    desc = "Automatically stop Cursor integration when exiting Neovim",
+    desc = "Automatically stop Claude Code integration when exiting Neovim",
   })
 
   M.state.initialized = true
   return M
 end
 
----Start the Cursor integration
+---Start the Claude Code integration
 ---@param show_startup_notification? boolean Whether to show a notification upon successful startup (defaults to true)
 ---@return boolean success Whether the operation was successful
 ---@return number|string port_or_error The WebSocket port if successful, or error message if failed
@@ -397,7 +397,7 @@ function M.start(show_startup_notification)
     show_startup_notification = true
   end
   if M.state.server then
-    local msg = "Cursor integration is already running on port " .. tostring(M.state.port)
+    local msg = "Claude Code integration is already running on port " .. tostring(M.state.port)
     logger.warn("init", msg)
     return false, "Already running"
   end
@@ -475,18 +475,18 @@ function M.start(show_startup_notification)
   end
 
   if show_startup_notification then
-    logger.info("init", "Cursor integration started on port " .. tostring(M.state.port))
+    logger.info("init", "Claude Code integration started on port " .. tostring(M.state.port))
   end
 
   return true, M.state.port
 end
 
----Stop the Cursor integration
+---Stop the Claude Code integration
 ---@return boolean success Whether the operation was successful
 ---@return string|nil error Error message if operation failed
 function M.stop()
   if not M.state.server then
-    logger.warn("init", "Cursor integration is not running")
+    logger.warn("init", "Claude Code integration is not running")
     return false, "Not running"
   end
 
@@ -506,7 +506,7 @@ function M.stop()
   local success, error = M.state.server.stop()
 
   if not success then
-    logger.error("init", "Failed to stop Cursor integration: " .. error)
+    logger.error("init", "Failed to stop Claude Code integration: " .. error)
     return false, error
   end
 
@@ -517,7 +517,7 @@ function M.stop()
   -- Clear any queued @ mentions when server stops
   clear_mention_queue()
 
-  logger.info("init", "Cursor integration stopped")
+  logger.info("init", "Claude Code integration stopped")
 
   return true
 end
@@ -525,26 +525,26 @@ end
 ---Set up user commands
 ---@private
 function M._create_commands()
-  vim.api.nvim_create_user_command("CursorCodeStart", function()
+  vim.api.nvim_create_user_command("ClaudeCodeStart", function()
     M.start()
   end, {
-    desc = "Start Cursor integration",
+    desc = "Start Claude Code integration",
   })
 
-  vim.api.nvim_create_user_command("CursorCodeStop", function()
+  vim.api.nvim_create_user_command("ClaudeCodeStop", function()
     M.stop()
   end, {
-    desc = "Stop Cursor integration",
+    desc = "Stop Claude Code integration",
   })
 
-  vim.api.nvim_create_user_command("CursorCodeStatus", function()
+  vim.api.nvim_create_user_command("ClaudeCodeStatus", function()
     if M.state.server and M.state.port then
-      logger.info("command", "Cursor integration is running on port " .. tostring(M.state.port))
+      logger.info("command", "Claude Code integration is running on port " .. tostring(M.state.port))
     else
-      logger.info("command", "Cursor integration is not running")
+      logger.info("command", "Claude Code integration is not running")
     end
   end, {
-    desc = "Show Cursor integration status",
+    desc = "Show Claude Code integration status",
   })
 
   ---@param file_paths table List of file paths to add
@@ -666,16 +666,16 @@ function M._create_commands()
       local files, error = integrations.get_selected_files_from_tree()
 
       if error then
-        logger.error("command", "CursorCodeSend->TreeAdd: " .. error)
+        logger.error("command", "ClaudeCodeSend->TreeAdd: " .. error)
         return
       end
 
       if not files or #files == 0 then
-        logger.warn("command", "CursorCodeSend->TreeAdd: No files selected")
+        logger.warn("command", "ClaudeCodeSend->TreeAdd: No files selected")
         return
       end
 
-      add_paths_to_claude(files, { context = "CursorCodeSend->TreeAdd" })
+      add_paths_to_claude(files, { context = "ClaudeCodeSend->TreeAdd" })
 
       return
     end
@@ -698,7 +698,7 @@ function M._create_commands()
         end)
       end
     else
-      logger.error("command", "CursorCodeSend: Failed to load selection module.")
+      logger.error("command", "ClaudeCodeSend: Failed to load selection module.")
     end
   end
 
@@ -742,16 +742,16 @@ function M._create_commands()
       end
 
       if error then
-        logger.error("command", "CursorCodeSend_visual->TreeAdd: " .. error)
+        logger.error("command", "ClaudeCodeSend_visual->TreeAdd: " .. error)
         return
       end
 
       if not files or #files == 0 then
-        logger.warn("command", "CursorCodeSend_visual->TreeAdd: No files selected")
+        logger.warn("command", "ClaudeCodeSend_visual->TreeAdd: No files selected")
         return
       end
 
-      add_paths_to_claude(files, { context = "CursorCodeSend_visual->TreeAdd" })
+      add_paths_to_claude(files, { context = "ClaudeCodeSend_visual->TreeAdd" })
       return
     end
 
@@ -763,7 +763,7 @@ function M._create_commands()
       if not error and files and #files > 0 then
         local success_count = add_paths_to_claude(files, {
           delay = 10,
-          context = "CursorCodeSend_visual",
+          context = "ClaudeCodeSend_visual",
           show_summary = false,
         })
         if success_count > 0 then
@@ -793,14 +793,14 @@ function M._create_commands()
   local visual_commands = require("claudecode.visual_commands")
   local unified_send_handler = visual_commands.create_visual_command_wrapper(handle_send_normal, handle_send_visual)
 
-  vim.api.nvim_create_user_command("CursorCodeSend", unified_send_handler, {
+  vim.api.nvim_create_user_command("ClaudeCodeSend", unified_send_handler, {
     desc = "Send current visual selection as an at_mention to Claude Code (supports tree visual selection)",
     range = true,
   })
 
   local function handle_tree_add_normal()
     if not M.state.server then
-      logger.error("command", "CursorCodeTreeAdd: Cursor integration is not running.")
+      logger.error("command", "ClaudeCodeTreeAdd: Claude Code integration is not running.")
       return
     end
 
@@ -808,12 +808,12 @@ function M._create_commands()
     local files, error = integrations.get_selected_files_from_tree()
 
     if error then
-      logger.error("command", "CursorCodeTreeAdd: " .. error)
+      logger.error("command", "ClaudeCodeTreeAdd: " .. error)
       return
     end
 
     if not files or #files == 0 then
-      logger.warn("command", "CursorCodeTreeAdd: No files selected")
+      logger.warn("command", "ClaudeCodeTreeAdd: No files selected")
       return
     end
 
@@ -822,19 +822,19 @@ function M._create_commands()
     local total_count = #files
 
     for _, file_path in ipairs(files) do
-      local success, error_msg = M.send_at_mention(file_path, nil, nil, "CursorCodeTreeAdd")
+      local success, error_msg = M.send_at_mention(file_path, nil, nil, "ClaudeCodeTreeAdd")
       if success then
         success_count = success_count + 1
       else
         logger.error(
           "command",
-          "CursorCodeTreeAdd: Failed to add file: " .. file_path .. " - " .. (error_msg or "unknown error")
+          "ClaudeCodeTreeAdd: Failed to add file: " .. file_path .. " - " .. (error_msg or "unknown error")
         )
       end
     end
 
     if success_count == 0 then
-      logger.error("command", "CursorCodeTreeAdd: Failed to add any files")
+      logger.error("command", "ClaudeCodeTreeAdd: Failed to add any files")
     elseif success_count < total_count then
       local message = string.format("Added %d/%d files to Claude context", success_count, total_count)
       logger.debug("command", message)
@@ -847,7 +847,7 @@ function M._create_commands()
 
   local function handle_tree_add_visual(visual_data)
     if not M.state.server then
-      logger.error("command", "CursorCodeTreeAdd_visual: Cursor integration is not running.")
+      logger.error("command", "ClaudeCodeTreeAdd_visual: Claude Code integration is not running.")
       return
     end
 
@@ -855,12 +855,12 @@ function M._create_commands()
     local files, error = visual_cmd_module.get_files_from_visual_selection(visual_data)
 
     if error then
-      logger.error("command", "CursorCodeTreeAdd_visual: " .. error)
+      logger.error("command", "ClaudeCodeTreeAdd_visual: " .. error)
       return
     end
 
     if not files or #files == 0 then
-      logger.warn("command", "CursorCodeTreeAdd_visual: No files selected in visual range")
+      logger.warn("command", "ClaudeCodeTreeAdd_visual: No files selected in visual range")
       return
     end
 
@@ -869,13 +869,13 @@ function M._create_commands()
     local total_count = #files
 
     for _, file_path in ipairs(files) do
-      local success, error_msg = M.send_at_mention(file_path, nil, nil, "CursorCodeTreeAdd_visual")
+      local success, error_msg = M.send_at_mention(file_path, nil, nil, "ClaudeCodeTreeAdd_visual")
       if success then
         success_count = success_count + 1
       else
         logger.error(
           "command",
-          "CursorCodeTreeAdd_visual: Failed to add file: " .. file_path .. " - " .. (error_msg or "unknown error")
+          "ClaudeCodeTreeAdd_visual: Failed to add file: " .. file_path .. " - " .. (error_msg or "unknown error")
         )
       end
     end
@@ -889,25 +889,25 @@ function M._create_commands()
         logger.warn("command", string.format("Added %d/%d files from visual selection", success_count, total_count))
       end
     else
-      logger.error("command", "CursorCodeTreeAdd_visual: Failed to add any files from visual selection")
+      logger.error("command", "ClaudeCodeTreeAdd_visual: Failed to add any files from visual selection")
     end
   end
 
   local unified_tree_add_handler =
     visual_commands.create_visual_command_wrapper(handle_tree_add_normal, handle_tree_add_visual)
 
-  vim.api.nvim_create_user_command("CursorCodeTreeAdd", unified_tree_add_handler, {
+  vim.api.nvim_create_user_command("ClaudeCodeTreeAdd", unified_tree_add_handler, {
     desc = "Add selected file(s) from tree explorer to Claude Code context (supports visual selection)",
   })
 
-  vim.api.nvim_create_user_command("CursorCodeAdd", function(opts)
+  vim.api.nvim_create_user_command("ClaudeCodeAdd", function(opts)
     if not M.state.server then
-      logger.error("command", "CursorCodeAdd: Cursor integration is not running.")
+      logger.error("command", "ClaudeCodeAdd: Claude Code integration is not running.")
       return
     end
 
     if not opts.args or opts.args == "" then
-      logger.error("command", "CursorCodeAdd: No file path provided")
+      logger.error("command", "ClaudeCodeAdd: No file path provided")
       return
     end
 
@@ -919,53 +919,53 @@ function M._create_commands()
     if #args > 3 then
       logger.error(
         "command",
-        "CursorCodeAdd: Too many arguments. Usage: ClaudeCodeAdd <file-path> [start-line] [end-line]"
+        "ClaudeCodeAdd: Too many arguments. Usage: ClaudeCodeAdd <file-path> [start-line] [end-line]"
       )
       return
     end
 
     if args[2] and not start_line then
-      logger.error("command", "CursorCodeAdd: Invalid start line number: " .. args[2])
+      logger.error("command", "ClaudeCodeAdd: Invalid start line number: " .. args[2])
       return
     end
 
     if args[3] and not end_line then
-      logger.error("command", "CursorCodeAdd: Invalid end line number: " .. args[3])
+      logger.error("command", "ClaudeCodeAdd: Invalid end line number: " .. args[3])
       return
     end
 
     if start_line and start_line < 1 then
-      logger.error("command", "CursorCodeAdd: Start line must be positive: " .. start_line)
+      logger.error("command", "ClaudeCodeAdd: Start line must be positive: " .. start_line)
       return
     end
 
     if end_line and end_line < 1 then
-      logger.error("command", "CursorCodeAdd: End line must be positive: " .. end_line)
+      logger.error("command", "ClaudeCodeAdd: End line must be positive: " .. end_line)
       return
     end
 
     if start_line and end_line and start_line > end_line then
       logger.error(
         "command",
-        "CursorCodeAdd: Start line (" .. start_line .. ") must be <= end line (" .. end_line .. ")"
+        "ClaudeCodeAdd: Start line (" .. start_line .. ") must be <= end line (" .. end_line .. ")"
       )
       return
     end
 
     file_path = vim.fn.expand(file_path)
     if vim.fn.filereadable(file_path) == 0 and vim.fn.isdirectory(file_path) == 0 then
-      logger.error("command", "CursorCodeAdd: File or directory does not exist: " .. file_path)
+      logger.error("command", "ClaudeCodeAdd: File or directory does not exist: " .. file_path)
       return
     end
 
     local claude_start_line = start_line and (start_line - 1) or nil
     local claude_end_line = end_line and (end_line - 1) or nil
 
-    local success, error_msg = M.send_at_mention(file_path, claude_start_line, claude_end_line, "CursorCodeAdd")
+    local success, error_msg = M.send_at_mention(file_path, claude_start_line, claude_end_line, "ClaudeCodeAdd")
     if not success then
-      logger.error("command", "CursorCodeAdd: " .. (error_msg or "Failed to add file"))
+      logger.error("command", "ClaudeCodeAdd: " .. (error_msg or "Failed to add file"))
     else
-      local message = "CursorCodeAdd: Successfully added " .. file_path
+      local message = "ClaudeCodeAdd: Successfully added " .. file_path
       if start_line or end_line then
         if start_line and end_line then
           message = message .. " (lines " .. start_line .. "-" .. end_line .. ")"
@@ -983,7 +983,7 @@ function M._create_commands()
 
   local terminal_ok, terminal = pcall(require, "claudecode.terminal")
   if terminal_ok then
-    vim.api.nvim_create_user_command("CursorCode", function(opts)
+    vim.api.nvim_create_user_command("ClaudeCode", function(opts)
       local current_mode = vim.fn.mode()
       if current_mode == "v" or current_mode == "V" or current_mode == "\22" then
         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
@@ -995,7 +995,7 @@ function M._create_commands()
       desc = "Toggle the Claude Code terminal window (simple show/hide) with optional arguments",
     })
 
-    vim.api.nvim_create_user_command("CursorCodeFocus", function(opts)
+    vim.api.nvim_create_user_command("ClaudeCodeFocus", function(opts)
       local current_mode = vim.fn.mode()
       if current_mode == "v" or current_mode == "V" or current_mode == "\22" then
         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
@@ -1007,7 +1007,7 @@ function M._create_commands()
       desc = "Smart focus/toggle Claude Code terminal (switches to terminal if not focused, hides if focused)",
     })
 
-    vim.api.nvim_create_user_command("CursorCodeOpen", function(opts)
+    vim.api.nvim_create_user_command("ClaudeCodeOpen", function(opts)
       local cmd_args = opts.args and opts.args ~= "" and opts.args or nil
       terminal.open({}, cmd_args)
     end, {
@@ -1015,7 +1015,7 @@ function M._create_commands()
       desc = "Open the Claude Code terminal window with optional arguments",
     })
 
-    vim.api.nvim_create_user_command("CursorCodeClose", function()
+    vim.api.nvim_create_user_command("ClaudeCodeClose", function()
       terminal.close()
     end, {
       desc = "Close the Claude Code terminal window",
@@ -1028,21 +1028,21 @@ function M._create_commands()
   end
 
   -- Diff management commands
-  vim.api.nvim_create_user_command("CursorCodeDiffAccept", function()
+  vim.api.nvim_create_user_command("ClaudeCodeDiffAccept", function()
     local diff = require("claudecode.diff")
     diff.accept_current_diff()
   end, {
     desc = "Accept the current diff changes",
   })
 
-  vim.api.nvim_create_user_command("CursorCodeDiffDeny", function()
+  vim.api.nvim_create_user_command("ClaudeCodeDiffDeny", function()
     local diff = require("claudecode.diff")
     diff.deny_current_diff()
   end, {
     desc = "Deny/reject the current diff changes",
   })
 
-  vim.api.nvim_create_user_command("CursorCodeSelectModel", function(opts)
+  vim.api.nvim_create_user_command("ClaudeCodeSelectModel", function(opts)
     local cmd_args = opts.args and opts.args ~= "" and opts.args or nil
     M.open_with_model(cmd_args)
   end, {
@@ -1076,7 +1076,7 @@ M.open_with_model = function(additional_args)
 
     local model_arg = "--model " .. choice.value
     local final_args = additional_args and (model_arg .. " " .. additional_args) or model_arg
-    vim.cmd("CursorCode " .. final_args)
+    vim.cmd("ClaudeCode " .. final_args)
   end)
 end
 
