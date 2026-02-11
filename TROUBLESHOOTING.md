@@ -1,6 +1,58 @@
-# Troubleshooting: Module 'cursorcode' Not Found
+# Troubleshooting Guide
 
-## Error Message
+## Common Errors
+
+### 1. Command Not Available: "E492: Not an editor command: CursorCode"
+
+If you see this error:
+```
+:CursorCode
+E492: Not an editor command: CursorCode
+```
+
+This means the plugin loaded but commands were not registered.
+
+#### Quick Fix
+
+Try restarting Neovim. If that doesn't work:
+
+1. **Check if plugin is loaded**:
+   ```vim
+   :lua print(vim.g.loaded_cursorcode)
+   ```
+   Should output `1`. If not, the plugin didn't load.
+
+2. **Manually trigger setup**:
+   ```vim
+   :lua require("cursorcode").setup()
+   ```
+   Then try `:CursorCode` again.
+
+3. **Check for errors**:
+   ```vim
+   :messages
+   ```
+   Look for any error messages about cursorcode.
+
+4. **Verify module loads**:
+   ```vim
+   :lua print(require("cursorcode").version:string())
+   ```
+   Should print version number (e.g., "1.0.0").
+
+#### Root Causes
+
+This issue was fixed in recent versions by:
+- Using VimEnter autocmd instead of vim.defer_fn
+- Better error handling in plugin loader
+- Lazy config loading to avoid early failures
+
+**Make sure you have the latest version**:
+```vim
+:Lazy update
+```
+
+### 2. Module 'cursorcode' Not Found
 
 If you see this error:
 ```
