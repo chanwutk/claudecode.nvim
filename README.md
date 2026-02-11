@@ -4,9 +4,11 @@
 ![Neovim version](https://img.shields.io/badge/Neovim-0.8%2B-green)
 ![Status](https://img.shields.io/badge/Status-beta-blue)
 
-**The first Neovim IDE integration for Claude Code** — bringing Anthropic's AI coding assistant to your favorite editor with a pure Lua implementation.
+**Neovim IDE integration for Claude Code and Cursor CLI** — bringing AI coding assistants to your favorite editor.
 
-> 🎯 **TL;DR:** When Anthropic released Claude Code with VS Code and JetBrains support, I reverse-engineered their extension and built this Neovim plugin. This plugin implements the same WebSocket-based MCP protocol, giving Neovim users the same AI-powered coding experience.
+> 🎯 **New:** This fork adds support for [Cursor CLI](https://cursor.com/cli) alongside Claude Code. See [CURSOR_SUPPORT.md](./CURSOR_SUPPORT.md) for details.
+
+> 🎯 **Original:** When Anthropic released Claude Code with VS Code and JetBrains support, the original author reverse-engineered their extension and built this Neovim plugin. This plugin implements the same WebSocket-based MCP protocol, giving Neovim users the same AI-powered coding experience.
 
 <https://github.com/user-attachments/assets/9c310fb5-5a23-482b-bedc-e21ae457a82d>
 
@@ -54,8 +56,32 @@ That's it! The plugin will auto-configure everything else.
 ## Requirements
 
 - Neovim >= 0.8.0
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed
+- **Either**: [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) OR [Cursor CLI](https://cursor.com/cli) installed
 - [folke/snacks.nvim](https://github.com/folke/snacks.nvim) for enhanced terminal support
+
+> **Note:** This fork defaults to `cursor` command. To use Claude Code instead, set `terminal_cmd = "claude"` in your config.
+> 
+> **For Cursor users:** See [CURSOR_SUPPORT.md](./CURSOR_SUPPORT.md) for detailed setup and usage.
+
+## Using with Cursor CLI
+
+Quick setup for Cursor:
+
+```lua
+{
+  "chanwutk/claudecode.nvim",
+  dependencies = { "folke/snacks.nvim" },
+  config = true,  -- Uses 'cursor' by default
+  keys = {
+    { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Cursor" },
+    { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+    { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
+    -- More keybindings...
+  },
+}
+```
+
+See [CURSOR_SUPPORT.md](./CURSOR_SUPPORT.md) for complete documentation.
 
 ## Local Installation Configuration
 
