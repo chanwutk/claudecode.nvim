@@ -102,7 +102,7 @@ end
 ---Falls back to native provider if configured provider is unavailable
 ---@return ClaudeCodeTerminalProvider provider The terminal provider module (never nil)
 local function get_provider()
-  local logger = require("claudecode.logger")
+  local logger = require("cursorcode.logger")
 
   -- Handle custom table provider
   if type(defaults.provider) == "table" then
