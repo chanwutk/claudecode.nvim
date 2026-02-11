@@ -48,8 +48,8 @@ end
 ---@return snacks.terminal.Opts opts Snacks terminal options with start_insert/auto_insert controlled by focus parameter
 local function build_opts(config, env_table, focus)
   focus = utils.normalize_focus(focus)
-  return {
-    env = env_table,
+  
+  local opts = {
     cwd = config.cwd,
     start_insert = focus,
     auto_insert = focus,
@@ -74,6 +74,13 @@ local function build_opts(config, env_table, focus)
       },
     } --[[@as snacks.win.Config]], config.snacks_win_opts or {}),
   } --[[@as snacks.terminal.Opts]]
+  
+  -- Only include env if it has values (empty table causes "Invalid argument: env" error)
+  if env_table and next(env_table) ~= nil then
+    opts.env = env_table
+  end
+  
+  return opts
 end
 
 function M.setup()

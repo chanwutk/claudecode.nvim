@@ -86,8 +86,8 @@ local function open_terminal(cmd_string, env_table, effective_config, focus)
     term_cmd_arg = { cmd_string }
   end
 
-  jobid = vim.fn.termopen(term_cmd_arg, {
-    env = env_table,
+  -- Build termopen options
+  local termopen_opts = {
     cwd = effective_config.cwd,
     on_exit = function(job_id, _, _)
       vim.schedule(function()
@@ -119,7 +119,14 @@ local function open_terminal(cmd_string, env_table, effective_config, focus)
         end
       end)
     end,
-  })
+  }
+  
+  -- Only include env if it has values (empty table causes "Invalid argument: env" error)
+  if env_table and next(env_table) ~= nil then
+    termopen_opts.env = env_table
+  end
+  
+  jobid = vim.fn.termopen(term_cmd_arg, termopen_opts)
 
   if not jobid or jobid == 0 then
     vim.notify("Failed to open native terminal.", vim.log.levels.ERROR)
