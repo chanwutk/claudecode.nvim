@@ -26,9 +26,11 @@ return {
     "chanwutk/claudecode.nvim",
     name = "cursorcode",  -- IMPORTANT: Different name!
     dependencies = { "folke/snacks.nvim" },
-    config = function()
-      require("cursorcode").setup({})
-    end,
+    -- Note: config is optional, commands auto-register!
+    -- Omit config for defaults, or customize:
+    -- config = function()
+    --   require("cursorcode").setup({})
+    -- end,
     keys = {
       { "<leader>c", nil, desc = "AI/Cursor" },
       { "<leader>cc", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
@@ -43,6 +45,7 @@ return {
 1. `name = "cursorcode"` - Gives the second plugin a different identifier
 2. Different keybindings: `<leader>a*` for Claude, `<leader>c*` for Cursor
 3. Different commands: `ClaudeCode*` vs `CursorCode*`
+4. **NEW**: Config is optional - commands auto-register on plugin load!
 
 ## Step 2: Verify Installation
 

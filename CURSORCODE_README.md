@@ -39,9 +39,17 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
     "chanwutk/claudecode.nvim",  -- Or your fork
     name = "cursorcode",  -- Important: give it a different name
     dependencies = { "folke/snacks.nvim" },
+    -- Note: config is optional - commands are auto-registered!
+    -- You can omit config entirely for defaults:
+    -- (no config needed)
+    
+    -- Or customize with config:
     config = function()
-      require("cursorcode").setup({})
+      require("cursorcode").setup({
+        -- your custom config here
+      })
     end,
+    
     keys = {
       { "<leader>c", nil, desc = "Cursor" },
       { "<leader>cc", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
@@ -57,6 +65,30 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
       },
     },
   },
+}
+```
+
+**Note**: The plugin now auto-registers commands on load, so you don't need to call `setup()` unless you want to customize settings. Both approaches work:
+
+```lua
+-- Minimal install (uses all defaults)
+{
+  "chanwutk/claudecode.nvim",
+  name = "cursorcode",
+  dependencies = { "folke/snacks.nvim" },
+}
+
+-- Custom config
+{
+  "chanwutk/claudecode.nvim",
+  name = "cursorcode",
+  dependencies = { "folke/snacks.nvim" },
+  config = function()
+    require("cursorcode").setup({
+      terminal_cmd = "cursor",
+      log_level = "debug",
+    })
+  end,
 }
 ```
 
