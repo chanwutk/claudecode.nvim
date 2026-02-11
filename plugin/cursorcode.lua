@@ -16,13 +16,30 @@ vim.g.loaded_cursorcode = 1
 
 -- Auto-setup: Either with user config or defaults
 -- This ensures commands are always available
-vim.defer_fn(function()
+local function setup_cursorcode()
   local ok, cursorcode = pcall(require, "cursorcode")
   if ok then
     -- Use user config if provided, otherwise use defaults
     local config = vim.g.cursorcode_user_config or vim.g.cursorcode_auto_setup or {}
-    cursorcode.setup(config)
+    local setup_ok, setup_err = pcall(cursorcode.setup, config)
+    if not setup_ok then
+      vim.api.nvim_err_writeln("cursorcode.nvim: setup failed: " .. tostring(setup_err))
+    end
   else
     vim.api.nvim_err_writeln("cursorcode.nvim: failed to load module: " .. tostring(cursorcode))
   end
-end, 0)
+end
+
+-- Schedule setup to run after VimEnter to ensure Neovim is fully initialized
+if vim.v.vim_did_enter == 1 then
+  -- Neovim already started, run setup immediately
+  setup_cursorcode()
+else
+  -- Wait for VimEnter event
+  vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+      setup_cursorcode()
+    end,
+    once = true,
+  })
+end

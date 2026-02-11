@@ -29,7 +29,7 @@ M.version = {
 -- Module state
 ---@type table
 M.state = {
-  config = require("cursorcode.config").defaults,
+  config = nil, -- Will be set during setup
   initialized = false,
 }
 
