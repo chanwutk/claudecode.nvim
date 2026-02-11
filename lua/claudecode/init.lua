@@ -273,29 +273,26 @@ function M._ensure_terminal_visible_if_connected()
   return true
 end
 
----Send @ mention to Claude Code, handling connection state automatically
+---Send @ mention to Cursor CLI, handling terminal state automatically
 ---@param file_path string The file path to send
----@param start_line number|nil Start line (0-indexed for Claude)
----@param end_line number|nil End line (0-indexed for Claude)
+---@param start_line number|nil Start line (0-indexed internally, will be converted to 1-indexed for display)
+---@param end_line number|nil End line (0-indexed internally, will be converted to 1-indexed for display)
 ---@param context string|nil Context for logging
 ---@return boolean success Whether the operation was successful
 ---@return string|nil error Error message if failed
 function M.send_at_mention(file_path, start_line, end_line, context)
   context = context or "command"
 
-  if not M.state.server then
-    logger.error(context, "Claude Code integration is not running")
-    return false, "Claude Code integration is not running"
-  end
-
-  -- Check if Claude Code is connected
-  if M.is_claude_connected() then
-    -- Claude is connected, send immediately and ensure terminal is visible
+  local terminal = require("claudecode.terminal")
+  
+  -- Check if terminal is active
+  local bufnr = terminal.get_active_terminal_bufnr()
+  
+  if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+    -- Terminal exists, send the @mention directly
     local success, error_msg = M._broadcast_at_mention(file_path, start_line, end_line)
     if success then
-      local terminal = require("claudecode.terminal")
       if M.state.config and M.state.config.focus_after_send then
-        -- Open focuses the terminal without toggling/hiding if already focused
         terminal.open()
       else
         terminal.ensure_visible()
@@ -303,15 +300,18 @@ function M.send_at_mention(file_path, start_line, end_line, context)
     end
     return success, error_msg
   else
-    -- Claude not connected, queue the mention and launch terminal
-    queue_mention(file_path, start_line, end_line)
-
-    -- Launch terminal with Claude Code
-    local terminal = require("claudecode.terminal")
+    -- Terminal doesn't exist, open it first then send
     terminal.open()
-
-    logger.debug(context, "Queued @ mention and launched Claude Code: " .. file_path)
-
+    
+    -- Wait a moment for terminal to be ready, then send the @mention
+    vim.defer_fn(function()
+      local success, error_msg = M._broadcast_at_mention(file_path, start_line, end_line)
+      if not success then
+        logger.error(context, "Failed to send @mention after opening terminal: " .. (error_msg or "unknown error"))
+      end
+    end, 500) -- 500ms delay to let terminal initialize
+    
+    logger.debug(context, "Opened Cursor terminal and queued @mention: " .. file_path)
     return true, nil
   end
 end
@@ -1141,10 +1141,9 @@ end
 
 ---Test helper functions (exposed for testing)
 function M._broadcast_at_mention(file_path, start_line, end_line)
-  if not M.state.server then
-    return false, "Claude Code integration is not running"
-  end
-
+  -- No longer requiring server for cursor-cli approach
+  -- We send text directly to the terminal instead
+  
   -- Safely format the path and handle validation errors
   local formatted_path, is_directory
   local format_success, format_result, is_dir_result = pcall(M._format_path_for_at_mention, file_path)
@@ -1159,33 +1158,29 @@ function M._broadcast_at_mention(file_path, start_line, end_line)
     end_line = nil
   end
 
-  local params = {
-    filePath = formatted_path,
-    lineStart = start_line,
-    lineEnd = end_line,
-  }
-
-  -- For tests or when explicitly configured, broadcast immediately without queuing
-  if
-    (M.state.config and M.state.config.disable_broadcast_debouncing)
-    or (package.loaded["busted"] and not (M.state.config and M.state.config.enable_broadcast_debouncing_in_tests))
-  then
-    local broadcast_success = M.state.server.broadcast("at_mentioned", params)
-    if broadcast_success then
-      return true, nil
-    else
-      local error_msg = "Failed to broadcast " .. (is_directory and "directory" or "file") .. " " .. formatted_path
-      logger.error("command", error_msg)
-      return false, error_msg
-    end
+  -- Format the @mention text for cursor-cli
+  local mention_text
+  if start_line and end_line then
+    -- Convert from 0-indexed (internal) to 1-indexed (display) for cursor-cli
+    local display_start = start_line + 1
+    local display_end = end_line + 1
+    mention_text = string.format("@%s:%d-%d", formatted_path, display_start, display_end)
+  else
+    mention_text = string.format("@%s", formatted_path)
   end
-
-  -- Use mention queue system for debounced broadcasting
-  queue_mention(formatted_path, start_line, end_line)
-
-  -- Always return success since we're queuing the message
-  -- The actual broadcast result will be logged in the queue processing
-  return true, nil
+  
+  -- Send the text directly to the cursor terminal
+  local terminal = require("claudecode.terminal")
+  local send_success = terminal.send_keys(mention_text .. " ")
+  
+  if send_success then
+    logger.debug("command", "Sent @mention to cursor: " .. mention_text)
+    return true, nil
+  else
+    local error_msg = "Failed to send @mention to cursor terminal: " .. mention_text
+    logger.error("command", error_msg)
+    return false, error_msg
+  end
 end
 
 function M._add_paths_to_claude(file_paths, options)

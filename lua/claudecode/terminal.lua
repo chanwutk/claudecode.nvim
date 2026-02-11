@@ -569,4 +569,30 @@ function M._get_managed_terminal_for_test()
   return nil
 end
 
+---Send text directly to the cursor terminal
+---@param text string The text to send to the terminal
+---@return boolean success Whether the text was sent successfully
+function M.send_keys(text)
+  local provider = get_provider()
+  
+  -- Check if terminal exists and get its buffer
+  local bufnr = provider.get_active_bufnr()
+  if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
+    logger.warn("terminal", "Cannot send keys: terminal not active")
+    return false
+  end
+  
+  -- Get the job ID for the terminal
+  local job_id = vim.fn.getbufvar(bufnr, 'terminal_job_id')
+  if not job_id or job_id == 0 then
+    logger.warn("terminal", "Cannot send keys: no terminal job found")
+    return false
+  end
+  
+  -- Send the text to the terminal
+  vim.fn.chansend(job_id, text)
+  logger.debug("terminal", "Sent text to cursor terminal: " .. text)
+  return true
+end
+
 return M
