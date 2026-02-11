@@ -1,53 +1,35 @@
-# claudecode.nvim
+# cursor-cli.nvim
 
-[![Tests](https://github.com/coder/claudecode.nvim/actions/workflows/test.yml/badge.svg)](https://github.com/coder/claudecode.nvim/actions/workflows/test.yml)
-![Neovim version](https://img.shields.io/badge/Neovim-0.8%2B-green)
+[![Neovim version](https://img.shields.io/badge/Neovim-0.8%2B-green)](https://neovim.io/)
 ![Status](https://img.shields.io/badge/Status-beta-blue)
 
-**Neovim IDE integration for Claude Code and Cursor CLI** — bringing AI coding assistants to your favorite editor.
+**Neovim integration for Cursor CLI** — bringing Cursor's AI coding assistant to your favorite editor.
 
-> 🎯 **New in this fork:** 
+> 🎯 **Repository Renamed**: This repository was renamed from `chanwutk/claudecode.nvim` to `chanwutk/cursor-cli.nvim`
+> - **Install with**: `"chanwutk/cursor-cli.nvim"`
+> - **Module name**: `name = "cursorcode"`
+> - **Troubleshooting**: See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) if you get "module 'cursorcode' not found" errors
+
+> 💡 **About This Fork**:
 > - Adds support for [Cursor CLI](https://cursor.com/cli) with **`CursorCode*`** commands
-> - Uses `agent` as the default command (cursor-cli's command)
-> - Can be installed **alongside** the [original plugin](https://github.com/coder/claudecode.nvim) without conflicts
-> - See [CURSOR_SUPPORT.md](./CURSOR_SUPPORT.md) for setup | [SIDE_BY_SIDE.md](./SIDE_BY_SIDE.md) for dual installation
+> - Works **independently** or **alongside** [coder/claudecode.nvim](https://github.com/coder/claudecode.nvim)
+> - Uses direct terminal text input (types `@filename` into cursor)
+> - See [CURSORCODE_README.md](./CURSORCODE_README.md) for full documentation
 
-> 🎯 **Original:** When Anthropic released Claude Code with VS Code and JetBrains support, the original author reverse-engineered their extension and built this Neovim plugin. This plugin implements the same WebSocket-based MCP protocol, giving Neovim users the same AI-powered coding experience.
+## Quick Start
 
-<https://github.com/user-attachments/assets/9c310fb5-5a23-482b-bedc-e21ae457a82d>
-
-## What Makes This Special
-
-When Anthropic released Claude Code, they only supported VS Code and JetBrains. As a Neovim user, I wanted the same experience — so I reverse-engineered their extension and built this.
-
-- 🚀 **Pure Lua, Zero Dependencies** — Built entirely with `vim.loop` and Neovim built-ins
-- 🔌 **100% Protocol Compatible** — Same WebSocket MCP implementation as official extensions
-- 🎓 **Fully Documented Protocol** — Learn how to build your own integrations ([see PROTOCOL.md](./PROTOCOL.md))
-- ⚡ **First to Market** — Beat Anthropic to releasing Neovim support
-- 🛠️ **Built with AI** — Used Claude to reverse-engineer Claude's own protocol
-
-## Installation
+### Installation with lazy.nvim
 
 ```lua
 {
-  "coder/claudecode.nvim",
+  "chanwutk/cursor-cli.nvim",  -- Repository name
+  name = "cursorcode",           -- Module name (important!)
   dependencies = { "folke/snacks.nvim" },
-  config = true,
-  keys = {
-    { "<leader>a", nil, desc = "AI/Cursor" },
-    { "<leader>ac", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-    { "<leader>af", "<cmd>CursorCodeFocus<cr>", desc = "Focus Cursor" },
-    { "<leader>ar", "<cmd>CursorCode --resume<cr>", desc = "Resume Cursor" },
-    { "<leader>aC", "<cmd>CursorCode --continue<cr>", desc = "Continue Cursor" },
-    { "<leader>am", "<cmd>CursorCodeSelectModel<cr>", desc = "Select model" },
-    { "<leader>ab", "<cmd>CursorCodeAdd %<cr>", desc = "Add current buffer" },
-    { "<leader>as", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
-    {
-      "<leader>as",
-      "<cmd>CursorCodeTreeAdd<cr>",
-      desc = "Add file",
-      ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
-    },
+  -- Config is optional - commands auto-register
+}
+```
+
+**Important**: Make sure to include `name = "cursorcode"` in your configuration!
     -- Diff management
     { "<leader>aa", "<cmd>CursorCodeDiffAccept<cr>", desc = "Accept diff" },
     { "<leader>ad", "<cmd>CursorCodeDiffDeny<cr>", desc = "Deny diff" },
@@ -65,8 +47,6 @@ That's it! The plugin will auto-configure everything else.
 
 > **Note:** This fork defaults to `cursor` command. To use Claude Code instead, set `terminal_cmd = "claude"` in your config.
 > 
-> **For Cursor users:** See [CURSOR_SUPPORT.md](./CURSOR_SUPPORT.md) for detailed setup and usage.
-
 ## Using with Cursor CLI
 
 Quick setup for Cursor:
@@ -74,18 +54,37 @@ Quick setup for Cursor:
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
+  name = "cursorcode",  -- ⚠️ Important: set module name
   dependencies = { "folke/snacks.nvim" },
-  config = true,  -- Uses 'cursor' by default
+  -- Config is optional - commands auto-register
   keys = {
-    { "<leader>ac", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-    { "<leader>ab", "<cmd>CursorCodeAdd %<cr>", desc = "Add current buffer" },
-    { "<leader>as", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
+    { "<leader>cc", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
+    { "<leader>cb", "<cmd>CursorCodeAdd %<cr>", desc = "Add current buffer" },
+    { "<leader>cs", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
     -- More keybindings...
   },
 }
 ```
 
-See [CURSOR_SUPPORT.md](./CURSOR_SUPPORT.md) for complete documentation.
+**Important Notes:**
+- **Repository**: `"chanwutk/cursor-cli.nvim"`
+- **Module name**: `name = "cursorcode"` (required for lazy.nvim)
+- Default cursor command is `"cursor"`
+- Commands auto-register on plugin load
+
+See [CURSORCODE_README.md](./CURSORCODE_README.md) for complete documentation.
+
+## Troubleshooting
+
+If you get "module 'cursorcode' not found" errors:
+
+1. Make sure you have `name = "cursorcode"` in your lazy.nvim config
+2. Reinstall the plugin: `:Lazy clean` then `:Lazy install`
+3. See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed solutions
+
+## Using with Claude Code (Original Plugin)
+
+This repository also maintains the original Claude Code integration. See sections below for Claude Code setup.
 
 ## Local Installation Configuration
 
