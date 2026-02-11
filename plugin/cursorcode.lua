@@ -14,12 +14,15 @@ end
 
 vim.g.loaded_cursorcode = 1
 
--- Auto-setup if requested
-if vim.g.cursorcode_auto_setup then
+-- Auto-setup: Either with user config or defaults
+-- This ensures commands are always available
+vim.defer_fn(function()
   local ok, cursorcode = pcall(require, "cursorcode")
   if ok then
-    cursorcode.setup(vim.g.cursorcode_user_config or {})
+    -- Use user config if provided, otherwise use defaults
+    local config = vim.g.cursorcode_user_config or vim.g.cursorcode_auto_setup or {}
+    cursorcode.setup(config)
   else
     vim.api.nvim_err_writeln("cursorcode.nvim: failed to load module: " .. tostring(cursorcode))
   end
-end
+end, 0)

@@ -223,6 +223,11 @@ end
 
 ---Create user commands for the plugin
 function M._create_commands()
+  -- Guard against duplicate command creation
+  if M.state.commands_created then
+    return
+  end
+  
   -- Toggle cursor terminal
   vim.api.nvim_create_user_command("CursorCode", function(opts)
     local terminal = require("cursorcode.terminal")
@@ -348,6 +353,9 @@ function M._create_commands()
   end, {
     desc = "Add selected file from tree explorer to Cursor",
   })
+  
+  -- Mark commands as created
+  M.state.commands_created = true
 end
 
 return M
