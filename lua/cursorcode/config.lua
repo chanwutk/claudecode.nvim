@@ -67,6 +67,7 @@ function M.validate(config)
   assert(
     type(config.visual_demotion_delay_ms) == "number" and config.visual_demotion_delay_ms >= 0,
     "visual_demotion_delay_ms must be a non-negative number"
+  )
 
   return true
 end
