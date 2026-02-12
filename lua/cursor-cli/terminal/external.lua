@@ -1,11 +1,11 @@
 --- External terminal provider for Cursor Code.
 ---Launches Cursor Code in an external terminal application using a user-specified command.
----@module 'cursorcode.terminal.external'
+---@module 'cursor-cli.terminal.external'
 
 ---@type ClaudeCodeTerminalProvider
 local M = {}
 
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 local jobid = nil
 ---@type ClaudeCodeTerminalConfig

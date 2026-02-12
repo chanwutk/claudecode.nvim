@@ -1,8 +1,8 @@
---- Tree integration module for CursorCode.nvim
+--- Tree integration module for CursorCLI.nvim
 --- Handles detection and selection of files from nvim-tree, neo-tree, mini.files, and oil.nvim
----@module 'cursorcode.integrations'
+---@module 'cursor-cli.integrations'
 local M = {}
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 ---Get selected files from the current tree explorer
 ---@return table|nil files List of file paths, or nil if error
@@ -270,7 +270,7 @@ function M._get_oil_selection()
   local mode = vim.fn.mode()
   if mode == "V" or mode == "v" or mode == "\22" then
     -- Visual mode: use the common visual range function
-    local visual_commands = require("cursorcode.visual_commands")
+    local visual_commands = require("cursor-cli.visual_commands")
     local start_line, end_line = visual_commands.get_visual_range()
 
     -- Get current directory once

@@ -1,6 +1,6 @@
 ---@brief Centralized logger for Cursor Code Neovim integration.
 -- Provides level-based logging.
----@module 'cursorcode.logger'
+---@module 'cursor-cli.logger'
 local M = {}
 
 M.levels = {
@@ -30,7 +30,7 @@ function M.setup(plugin_config)
     current_log_level_value = level_values[conf.log_level]
   else
     vim.notify(
-      "CursorCode Logger: Invalid or missing log_level in configuration (received: "
+      "CursorCLI Logger: Invalid or missing log_level in configuration (received: "
         .. tostring(conf and conf.log_level)
         .. "). Defaulting to INFO.",
       vim.log.levels.WARN
@@ -44,7 +44,7 @@ local function log(level, component, message_parts)
     return
   end
 
-  local prefix = "[CursorCode]"
+  local prefix = "[CursorCLI]"
   if component then
     prefix = prefix .. " [" .. component .. "]"
   end
@@ -74,9 +74,9 @@ local function log(level, component, message_parts)
   -- "nvim_echo must not be called in a fast event context" errors
   vim.schedule(function()
     if level == M.levels.ERROR then
-      vim.notify(prefix .. " " .. message, vim.log.levels.ERROR, { title = "CursorCode Error" })
+      vim.notify(prefix .. " " .. message, vim.log.levels.ERROR, { title = "CursorCLI Error" })
     elseif level == M.levels.WARN then
-      vim.notify(prefix .. " " .. message, vim.log.levels.WARN, { title = "CursorCode Warning" })
+      vim.notify(prefix .. " " .. message, vim.log.levels.WARN, { title = "CursorCLI Warning" })
     else
       -- For INFO, DEBUG, TRACE, use nvim_echo to avoid flooding notifications,
       -- to make them appear in :messages

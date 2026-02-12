@@ -1,9 +1,9 @@
 ---Manages selection tracking and communication with the Claude server.
----@module 'cursorcode.selection'
+---@module 'cursor-cli.selection'
 local M = {}
 
-local logger = require("cursorcode.logger")
-local terminal = require("cursorcode.terminal")
+local logger = require("cursor-cli.logger")
+local terminal = require("cursor-cli.terminal")
 
 M.state = {
   latest_selection = nil,
@@ -55,7 +55,7 @@ end
 ---Sets up listeners for CursorMoved, CursorMovedI, BufEnter, ModeChanged, and TextChanged events.
 ---@local
 function M._create_autocommands()
-  local group = vim.api.nvim_create_augroup("CursorCodeSelection", { clear = true })
+  local group = vim.api.nvim_create_augroup("CursorCLISelection", { clear = true })
 
   vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufEnter" }, {
     group = group,
@@ -82,7 +82,7 @@ end
 ---Clears the autocommands related to selection tracking.
 ---@local
 function M._clear_autocommands()
-  vim.api.nvim_clear_autocmds({ group = "CursorCodeSelection" })
+  vim.api.nvim_clear_autocmds({ group = "CursorCLISelection" })
 end
 
 ---Handles cursor movement events.
@@ -669,12 +669,12 @@ function M.send_at_mention_for_visual_selection(line1, line2)
   end
 
   -- Use cursorcode main module to send the at-mention
-  local cursorcode_main = require("cursorcode")
+  local cursorcode_main = require("cursor-cli")
   local file_path = sel_to_send.filePath
   local start_line = sel_to_send.selection.start.line -- Already 0-indexed from selection module
   local end_line = sel_to_send.selection["end"].line -- Already 0-indexed
 
-  local success, error_msg = cursorcode_main.send_at_mention(file_path, start_line, end_line, "CursorCodeSend")
+  local success, error_msg = cursorcode_main.send_at_mention(file_path, start_line, end_line, "CursorCLISend")
 
   if success then
     logger.debug("selection", "Visual selection sent as at-mention.")

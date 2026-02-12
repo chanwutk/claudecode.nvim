@@ -8,7 +8,7 @@
 ---@module 'cursorcode'
 local M = {}
 
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 --- Current plugin version
 ---@type table
@@ -111,7 +111,7 @@ function M._send_at_mention(file_path, start_line, end_line)
   end
 
   -- Send the text directly to the cursor terminal
-  local terminal = require("cursorcode.terminal")
+  local terminal = require("cursor-cli.terminal")
   local send_success = terminal.send_keys(mention_text .. " ")
 
   if send_success then
@@ -134,7 +134,7 @@ end
 function M.send_at_mention(file_path, start_line, end_line, context)
   context = context or "command"
 
-  local terminal = require("cursorcode.terminal")
+  local terminal = require("cursor-cli.terminal")
 
   -- Check if terminal is active
   local bufnr = terminal.get_active_terminal_bufnr()
@@ -198,7 +198,7 @@ end
 function M.setup(opts)
   opts = opts or {}
 
-  local config = require("cursorcode.config")
+  local config = require("cursor-cli.config")
   M.state.config = config.apply(opts)
 
   logger.setup(M.state.config)
@@ -224,7 +224,7 @@ function M.setup(opts)
     end
   end
 
-  local terminal_setup_ok, terminal_module = pcall(require, "cursorcode.terminal")
+  local terminal_setup_ok, terminal_module = pcall(require, "cursor-cli.terminal")
   if terminal_setup_ok then
     if type(terminal_module.setup) == "function" then
       terminal_module.setup(opts.terminal, M.state.config.terminal_cmd, M.state.config.env)
@@ -232,7 +232,7 @@ function M.setup(opts)
   end
 
   -- Note: Selection tracking is disabled for cursorcode (uses direct text input)
-  -- The cursorcode plugin captures selections on-demand via commands like CursorCodeSend
+  -- The cursorcode plugin captures selections on-demand via commands like CursorCLISend
 
   -- Create commands
   M._create_commands()
@@ -249,8 +249,8 @@ function M._create_commands()
   end
   
   -- Toggle cursor terminal
-  vim.api.nvim_create_user_command("CursorCode", function(opts)
-    local terminal = require("cursorcode.terminal")
+  vim.api.nvim_create_user_command("CursorCLI", function(opts)
+    local terminal = require("cursor-cli.terminal")
     local cmd_args = opts.args ~= "" and opts.args or nil
     terminal.focus_toggle(nil, cmd_args)
   end, {
@@ -259,8 +259,8 @@ function M._create_commands()
   })
 
   -- Open cursor terminal
-  vim.api.nvim_create_user_command("CursorCodeOpen", function(opts)
-    local terminal = require("cursorcode.terminal")
+  vim.api.nvim_create_user_command("CursorCLIOpen", function(opts)
+    local terminal = require("cursor-cli.terminal")
     local cmd_args = opts.args ~= "" and opts.args or nil
     terminal.open(nil, cmd_args)
   end, {
@@ -269,16 +269,16 @@ function M._create_commands()
   })
 
   -- Close cursor terminal
-  vim.api.nvim_create_user_command("CursorCodeClose", function()
-    local terminal = require("cursorcode.terminal")
+  vim.api.nvim_create_user_command("CursorCLIClose", function()
+    local terminal = require("cursor-cli.terminal")
     terminal.close()
   end, {
     desc = "Close Cursor Code terminal",
   })
 
   -- Focus cursor terminal
-  vim.api.nvim_create_user_command("CursorCodeFocus", function(opts)
-    local terminal = require("cursorcode.terminal")
+  vim.api.nvim_create_user_command("CursorCLIFocus", function(opts)
+    local terminal = require("cursor-cli.terminal")
     local cmd_args = opts.args ~= "" and opts.args or nil
     terminal.focus_toggle(nil, cmd_args)
   end, {
@@ -287,12 +287,12 @@ function M._create_commands()
   })
 
   -- Add file to cursor context
-  vim.api.nvim_create_user_command("CursorCodeAdd", function(opts)
+  vim.api.nvim_create_user_command("CursorCLIAdd", function(opts)
     local args = vim.split(opts.args, "%s+")
     local file_path = args[1]
 
     if not file_path or file_path == "" then
-      logger.warn("command", "CursorCodeAdd: No file path provided")
+      logger.warn("command", "CursorCLIAdd: No file path provided")
       return
     end
 
@@ -302,7 +302,7 @@ function M._create_commands()
 
     file_path = vim.fn.expand(file_path)
     if vim.fn.filereadable(file_path) == 0 and vim.fn.isdirectory(file_path) == 0 then
-      logger.error("command", "CursorCodeAdd: File or directory does not exist: " .. file_path)
+      logger.error("command", "CursorCLIAdd: File or directory does not exist: " .. file_path)
       return
     end
 
@@ -310,11 +310,11 @@ function M._create_commands()
     local cursor_start_line = start_line and (start_line - 1) or nil
     local cursor_end_line = end_line and (end_line - 1) or nil
 
-    local success, error_msg = M.send_at_mention(file_path, cursor_start_line, cursor_end_line, "CursorCodeAdd")
+    local success, error_msg = M.send_at_mention(file_path, cursor_start_line, cursor_end_line, "CursorCLIAdd")
     if not success then
-      logger.error("command", "CursorCodeAdd: " .. (error_msg or "Failed to add file"))
+      logger.error("command", "CursorCLIAdd: " .. (error_msg or "Failed to add file"))
     else
-      local message = "CursorCodeAdd: Successfully added " .. file_path
+      local message = "CursorCLIAdd: Successfully added " .. file_path
       if start_line or end_line then
         if start_line and end_line then
           message = message .. " (lines " .. start_line .. "-" .. end_line .. ")"
@@ -331,8 +331,8 @@ function M._create_commands()
   })
 
   -- Send visual selection
-  vim.api.nvim_create_user_command("CursorCodeSend", function(opts)
-    local selection_module_ok, selection_module = pcall(require, "cursorcode.selection")
+  vim.api.nvim_create_user_command("CursorCLISend", function(opts)
+    local selection_module_ok, selection_module = pcall(require, "cursor-cli.selection")
     if selection_module_ok then
       local line1, line2 = nil, nil
       if opts and opts.range and opts.range > 0 then
@@ -348,8 +348,8 @@ function M._create_commands()
   })
 
   -- Add from file tree
-  vim.api.nvim_create_user_command("CursorCodeTreeAdd", function()
-    local integrations_ok, integrations = pcall(require, "cursorcode.integrations")
+  vim.api.nvim_create_user_command("CursorCLITreeAdd", function()
+    local integrations_ok, integrations = pcall(require, "cursor-cli.integrations")
     if not integrations_ok then
       logger.warn("command", "Integrations module not available")
       return
@@ -357,14 +357,14 @@ function M._create_commands()
 
     local files = integrations.get_selected_files()
     if not files or #files == 0 then
-      logger.warn("command", "CursorCodeTreeAdd: No files selected")
+      logger.warn("command", "CursorCLITreeAdd: No files selected")
       return
     end
 
     for _, file_path in ipairs(files) do
-      local success, error_msg = M.send_at_mention(file_path, nil, nil, "CursorCodeTreeAdd")
+      local success, error_msg = M.send_at_mention(file_path, nil, nil, "CursorCLITreeAdd")
       if not success then
-        logger.error("command", "CursorCodeTreeAdd: Failed to add file: " .. file_path .. " - " .. (error_msg or "unknown error"))
+        logger.error("command", "CursorCLITreeAdd: Failed to add file: " .. file_path .. " - " .. (error_msg or "unknown error"))
       end
     end
 

@@ -1,10 +1,10 @@
 ---Native Neovim terminal provider for Cursor Code.
----@module 'cursorcode.terminal.native'
+---@module 'cursor-cli.terminal.native'
 
 local M = {}
 
-local logger = require("cursorcode.logger")
-local utils = require("cursorcode.utils")
+local logger = require("cursor-cli.logger")
+local utils = require("cursor-cli.utils")
 
 local bufnr = nil
 local winid = nil
@@ -12,7 +12,7 @@ local jobid = nil
 local tip_shown = false
 
 ---@type ClaudeCodeTerminalConfig
-local config = require("cursorcode.terminal").defaults
+local config = require("cursor-cli.terminal").defaults
 
 local function cleanup_state()
   bufnr = nil

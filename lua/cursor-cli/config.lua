@@ -2,7 +2,7 @@
 --- Manages configuration for the Cursor Code Neovim integration.
 --- Provides default settings, validation, and application of user-defined configurations.
 ---@brief ]]
----@module 'cursorcode.config'
+---@module 'cursor-cli.config'
 
 local M = {}
 
@@ -80,7 +80,7 @@ function M.apply(user_config)
 
   -- Lazy-load terminal defaults to avoid circular dependency
   if config.terminal == nil then
-    local terminal_ok, terminal_module = pcall(require, "cursorcode.terminal")
+    local terminal_ok, terminal_module = pcall(require, "cursor-cli.terminal")
     if terminal_ok and terminal_module.defaults then
       config.terminal = terminal_module.defaults
     end

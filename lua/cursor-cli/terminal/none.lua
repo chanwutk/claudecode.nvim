@@ -1,6 +1,6 @@
 --- No-op terminal provider for Cursor Code.
 --- Performs zero UI actions and never manages terminals inside Neovim.
----@module 'cursorcode.terminal.none'
+---@module 'cursor-cli.terminal.none'
 
 ---@type ClaudeCodeTerminalProvider
 local M = {}

@@ -1,10 +1,10 @@
 --- Module to manage a dedicated vertical split terminal for Cursor CLI.
 --- Supports Snacks.nvim or a native Neovim terminal fallback.
---- @module 'cursorcode.terminal'
+--- @module 'cursor-cli.terminal'
 
 local M = {}
 
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 ---@type table
 local defaults = {
@@ -35,7 +35,7 @@ local providers = {}
 ---@return table|nil provider The provider module, or nil if loading failed
 local function load_provider(provider_name)
   if not providers[provider_name] then
-    local ok, provider = pcall(require, "cursorcode.terminal." .. provider_name)
+    local ok, provider = pcall(require, "cursor-cli.terminal." .. provider_name)
     if ok then
       providers[provider_name] = provider
     else
@@ -104,7 +104,7 @@ end
 ---Falls back to native provider if configured provider is unavailable
 ---@return ClaudeCodeTerminalProvider provider The terminal provider module (never nil)
 local function get_provider()
-  local logger = require("cursorcode.logger")
+  local logger = require("cursor-cli.logger")
 
   -- Handle custom table provider
   if type(defaults.provider) == "table" then

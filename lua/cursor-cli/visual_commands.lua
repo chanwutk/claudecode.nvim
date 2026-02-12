@@ -1,8 +1,8 @@
----Visual command handling module for CursorCode.nvim
+---Visual command handling module for CursorCLI.nvim
 ---Implements neo-tree-style visual mode exit and command processing
----@module 'cursorcode.visual_commands'
+---@module 'cursor-cli.visual_commands'
 local M = {}
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 ---Get current vim mode with fallback for test environments
 ---@param full_mode? boolean Whether to get full mode info (passed to vim.fn.mode)
@@ -345,7 +345,7 @@ function M.get_files_from_visual_selection(visual_data)
   elseif tree_type == "nvim-tree" then
     -- For nvim-tree, we need to manually map visual lines to tree nodes
     -- since nvim-tree doesn't have direct line-to-node mapping like neo-tree
-    require("cursorcode.logger").debug(
+    require("cursor-cli.logger").debug(
       "visual_commands",
       "Processing nvim-tree visual selection from line",
       start_pos,
@@ -359,7 +359,7 @@ function M.get_files_from_visual_selection(visual_data)
     -- Get all lines in the visual selection
     local lines = vim.api.nvim_buf_get_lines(current_buf, start_pos - 1, end_pos, false)
 
-    require("cursorcode.logger").debug("visual_commands", "Found", #lines, "lines in visual selection")
+    require("cursor-cli.logger").debug("visual_commands", "Found", #lines, "lines in visual selection")
 
     -- For each line in the visual selection, try to get the corresponding node
     for i, _ in ipairs(lines) do
@@ -371,7 +371,7 @@ function M.get_files_from_visual_selection(visual_data)
       -- Get node under cursor for this line
       local node_success, node = pcall(nvim_tree_api.tree.get_node_under_cursor)
       if node_success and node then
-        require("cursorcode.logger").debug(
+        require("cursor-cli.logger").debug(
           "visual_commands",
           "Line",
           line_num,
@@ -390,11 +390,11 @@ function M.get_files_from_visual_selection(visual_data)
           table.insert(files, node.absolute_path)
         end
       else
-        require("cursorcode.logger").debug("visual_commands", "No valid node found for line", line_num)
+        require("cursor-cli.logger").debug("visual_commands", "No valid node found for line", line_num)
       end
     end
 
-    require("cursorcode.logger").debug("visual_commands", "Extracted", #files, "files from nvim-tree visual selection")
+    require("cursor-cli.logger").debug("visual_commands", "Extracted", #files, "files from nvim-tree visual selection")
 
     -- Remove duplicates while preserving order
     local seen = {}

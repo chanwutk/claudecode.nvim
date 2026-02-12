@@ -1,10 +1,10 @@
 ---Snacks.nvim terminal provider for Cursor Code.
----@module 'cursorcode.terminal.snacks'
+---@module 'cursor-cli.terminal.snacks'
 
 local M = {}
 
 local snacks_available, Snacks = pcall(require, "snacks")
-local utils = require("cursorcode.utils")
+local utils = require("cursor-cli.utils")
 local terminal = nil
 
 --- @return boolean
@@ -16,7 +16,7 @@ end
 ---@param term_instance table The Snacks terminal instance
 ---@param config table Configuration options
 local function setup_terminal_events(term_instance, config)
-  local logger = require("cursorcode.logger")
+  local logger = require("cursor-cli.logger")
 
   -- Handle command completion/exit - only if auto_close is enabled
   if config.auto_close then
@@ -137,7 +137,7 @@ function M.open(cmd_string, env_table, config, focus)
     terminal = term_instance
   else
     terminal = nil
-    local logger = require("cursorcode.logger")
+    local logger = require("cursor-cli.logger")
     local error_details = {}
     if not term_instance then
       table.insert(error_details, "Snacks.terminal.open() returned nil")
@@ -185,7 +185,7 @@ function M.simple_toggle(cmd_string, env_table, config)
     return
   end
 
-  local logger = require("cursorcode.logger")
+  local logger = require("cursor-cli.logger")
 
   -- Check if terminal exists and is visible
   if terminal and terminal:buf_valid() and terminal:win_valid() then
@@ -213,7 +213,7 @@ function M.focus_toggle(cmd_string, env_table, config)
     return
   end
 
-  local logger = require("cursorcode.logger")
+  local logger = require("cursor-cli.logger")
 
   -- Terminal exists, is valid, but not visible
   if terminal and terminal:buf_valid() and not terminal:win_valid() then
