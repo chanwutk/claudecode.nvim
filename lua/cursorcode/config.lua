@@ -12,8 +12,8 @@ M.defaults = {
   env = {}, -- Custom environment variables for Cursor terminal
   log_level = "info",
   track_selection = false, -- Cursorcode doesn't need selection tracking (uses direct text input)
-  -- When true, focus Cursor terminal after a successful send
-  focus_after_send = false,
+  -- When true, focus Cursor terminal after a successful send (default: true for better UX)
+  focus_after_send = true,
   visual_demotion_delay_ms = 50, -- Milliseconds to wait before demoting a visual selection
   terminal = nil, -- Will be lazy-loaded to avoid circular dependency
 }
