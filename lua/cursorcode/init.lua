@@ -145,6 +145,15 @@ function M.send_at_mention(file_path, start_line, end_line, context)
     if success then
       if M.state.config and M.state.config.focus_after_send then
         terminal.open()
+        -- Exit visual mode and enter insert mode so user can type immediately
+        vim.schedule(function()
+          -- Exit visual mode if currently in it
+          if vim.fn.mode():match("[vV\22]") then
+            vim.cmd("normal! \\<Esc>")
+          end
+          -- Enter insert mode at the end of the terminal buffer
+          vim.cmd("startinsert")
+        end)
       else
         terminal.ensure_visible()
       end
@@ -153,6 +162,16 @@ function M.send_at_mention(file_path, start_line, end_line, context)
   else
     -- Terminal doesn't exist, open it first then send
     terminal.open()
+
+    -- Exit visual mode and enter insert mode so user can type immediately
+    vim.schedule(function()
+      -- Exit visual mode if currently in it
+      if vim.fn.mode():match("[vV\22]") then
+        vim.cmd("normal! \\<Esc>")
+      end
+      -- Enter insert mode at the end of the terminal buffer
+      vim.cmd("startinsert")
+    end)
 
     -- Wait a moment for terminal to be ready, then send the @mention
     vim.defer_fn(function()
