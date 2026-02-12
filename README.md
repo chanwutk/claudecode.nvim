@@ -5,16 +5,21 @@
 
 **Neovim integration for Cursor CLI** — bringing Cursor's AI coding assistant to your favorite editor.
 
-> 🎯 **Repository Renamed**: This repository was renamed from `chanwutk/claudecode.nvim` to `chanwutk/cursor-cli.nvim`
-> - **Install with**: `"chanwutk/cursor-cli.nvim"`
-> - **Module name**: `name = "cursorcode"`
-> - **Troubleshooting**: See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) if you get "module 'cursorcode' not found" errors
+> ⚠️ **Important**: This plugin provides **ONLY Cursor CLI support** (no Claude Code support)
+> - For Claude Code, install the official [coder/claudecode.nvim](https://github.com/coder/claudecode.nvim) plugin
+> - Both plugins can be installed together without conflicts!
 
-> 💡 **About This Fork**:
-> - Adds support for [Cursor CLI](https://cursor.com/cli) with **`CursorCode*`** commands
-> - Works **independently** or **alongside** [coder/claudecode.nvim](https://github.com/coder/claudecode.nvim)
-> - Uses direct terminal text input (types `@filename` into cursor)
-> - See [CURSORCODE_README.md](./CURSORCODE_README.md) for full documentation
+> 🎯 **Repository Information**:
+> - **Repository**: `chanwutk/cursor-cli.nvim`
+> - **Module name**: `cursorcode`
+> - **Commands**: `CursorCode*` (not `ClaudeCode*`)
+> - **CLI command**: `agent` (cursor-cli executable)
+
+> 💡 **Works Alongside claudecode.nvim**:
+> - This plugin and `coder/claudecode.nvim` can coexist peacefully
+> - Different module names: `cursorcode` vs `claudecode`
+> - Different commands: `CursorCode*` vs `ClaudeCode*`
+> - See [QUICKSTART.md](./QUICKSTART.md) for dual installation guide
 
 ## Quick Start
 
@@ -42,14 +47,13 @@ That's it! The plugin will auto-configure everything else.
 ## Requirements
 
 - Neovim >= 0.8.0
-- **Either**: [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) OR [Cursor CLI](https://cursor.com/cli) installed
+- [Cursor CLI](https://cursor.com/cli) installed (command: `agent`)
 - [folke/snacks.nvim](https://github.com/folke/snacks.nvim) for enhanced terminal support
 
-> **Note:** This fork defaults to `agent` command (cursor-cli). To use Claude Code instead, set `terminal_cmd = "claude"` in your config.
-> 
+> **Note:** This plugin supports **ONLY Cursor CLI**. For Claude Code, install [coder/claudecode.nvim](https://github.com/coder/claudecode.nvim) separately. 
 ## Using with Cursor CLI
 
-Quick setup for Cursor:
+This plugin provides Cursor CLI integration for Neovim:
 
 ```lua
 {
@@ -62,6 +66,28 @@ Quick setup for Cursor:
     { "<leader>cb", "<cmd>CursorCodeAdd %<cr>", desc = "Add current buffer" },
     { "<leader>cs", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
     -- More keybindings...
+  },
+}
+```
+
+### Install Alongside Claude Code
+
+Both plugins can coexist! See [QUICKSTART.md](./QUICKSTART.md) for dual installation:
+
+```lua
+-- Both plugins together
+return {
+  -- Official Claude Code plugin
+  {
+    "coder/claudecode.nvim",
+    config = true,
+  },
+  
+  -- This Cursor CLI plugin
+  {
+    "chanwutk/cursor-cli.nvim",
+    name = "cursorcode",  -- Different module name!
+    dependencies = { "folke/snacks.nvim" },
   },
 }
 ```
