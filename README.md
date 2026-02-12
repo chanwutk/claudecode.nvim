@@ -45,7 +45,7 @@ That's it! The plugin will auto-configure everything else.
 - **Either**: [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) OR [Cursor CLI](https://cursor.com/cli) installed
 - [folke/snacks.nvim](https://github.com/folke/snacks.nvim) for enhanced terminal support
 
-> **Note:** This fork defaults to `cursor` command. To use Claude Code instead, set `terminal_cmd = "claude"` in your config.
+> **Note:** This fork defaults to `agent` command (cursor-cli). To use Claude Code instead, set `terminal_cmd = "claude"` in your config.
 > 
 ## Using with Cursor CLI
 
@@ -69,7 +69,7 @@ Quick setup for Cursor:
 **Important Notes:**
 - **Repository**: `"chanwutk/cursor-cli.nvim"`
 - **Module name**: `name = "cursorcode"` (required for lazy.nvim)
-- Default cursor command is `"cursor"`
+- Default cursor-cli command is `"agent"`
 - Commands auto-register on plugin load
 
 See [CURSORCODE_README.md](./CURSORCODE_README.md) for complete documentation.

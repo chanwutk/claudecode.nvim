@@ -233,12 +233,12 @@ Cursor processes the file reference
 
 ### Cursor command not found
 ```
-Error: cursor: command not found
+Error: agent: command not found
 ```
 **Solution**: Install cursor-cli or configure the path:
 ```lua
 require("cursorcode").setup({
-  terminal_cmd = "/path/to/cursor",
+  terminal_cmd = "/path/to/agent",
 })
 ```
 

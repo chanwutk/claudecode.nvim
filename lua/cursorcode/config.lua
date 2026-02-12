@@ -8,7 +8,7 @@ local M = {}
 
 ---@type table
 M.defaults = {
-  terminal_cmd = nil, -- Will default to "cursor" if not set
+  terminal_cmd = nil, -- Will default to "agent" (cursor-cli command) if not set
   env = {}, -- Custom environment variables for Cursor terminal
   log_level = "info",
   track_selection = true,
