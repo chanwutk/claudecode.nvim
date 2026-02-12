@@ -142,7 +142,8 @@ end
 function M.close()
   if is_valid() then
     -- Try to stop the job gracefully
-    vim.fn.jobstop(jobid)
+    -- Use pcall to handle cases where job is already stopped
+    pcall(vim.fn.jobstop, jobid)
     cleanup_state()
   end
 end

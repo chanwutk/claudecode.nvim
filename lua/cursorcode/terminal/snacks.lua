@@ -172,7 +172,10 @@ function M.close()
     return
   end
   if terminal and terminal:buf_valid() then
-    terminal:close()
+    -- Use pcall to handle any errors during close
+    pcall(function()
+      terminal:close()
+    end)
   end
 end
 

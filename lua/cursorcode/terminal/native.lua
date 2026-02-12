@@ -163,7 +163,8 @@ local function close_terminal()
     -- which then calls cleanup_state.
     -- If the job already exited, on_exit would have cleaned up.
     -- This direct close is for user-initiated close.
-    vim.api.nvim_win_close(winid, true)
+    -- Use pcall to handle cases where window is already closed/invalid
+    pcall(vim.api.nvim_win_close, winid, true)
     cleanup_state() -- Cleanup after explicit close
   end
 end
