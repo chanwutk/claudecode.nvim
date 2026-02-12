@@ -21,6 +21,12 @@
 > - Different commands: `CursorCLI*` vs `ClaudeCode*`
 > - See [QUICKSTART.md](./QUICKSTART.md) for dual installation guide
 
+> 📖 **Documentation**:
+> - **[DESIGN.md](./DESIGN.md)** - Complete design and architecture documentation
+> - **[QUICKSTART.md](./QUICKSTART.md)** - Dual installation guide (Claude + Cursor)
+> - **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common issues and solutions
+> - **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Contributing and development guide
+
 ## Quick Start
 
 ### Installation with lazy.nvim
