@@ -1,0 +1,124 @@
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     CURSOR-CLI INTEGRATION CHANGES                       │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────── BEFORE (Claude Code) ─────────────────────────┐
+│                                                                         │
+│  User runs: :ClaudeCodeAdd myfile.ts 10 20                            │
+│       ↓                                                                 │
+│  Plugin: M.send_at_mention("myfile.ts", 9, 19)  [0-indexed]          │
+│       ↓                                                                 │
+│  Check if Claude connected to WebSocket server?                        │
+│       ↓ (YES)                                                          │
+│  M._broadcast_at_mention()                                             │
+│       ↓                                                                 │
+│  Format WebSocket message:                                             │
+│    {                                                                   │
+│      type: "at_mentioned",                                             │
+│      filePath: "myfile.ts",                                            │
+│      lineStart: 9,      [0-indexed]                                    │
+│      lineEnd: 19        [0-indexed]                                    │
+│    }                                                                   │
+│       ↓                                                                 │
+│  M.state.server.broadcast("at_mentioned", params)                      │
+│       ↓                                                                 │
+│  ╔═══════════════════════════════════════════╗                        │
+│  ║   WebSocket Server (Port 10000)          ║                        │
+│  ║   Sends JSON to Claude Code CLI          ║                        │
+│  ╚═══════════════════════════════════════════╝                        │
+│       ↓                                                                 │
+│  Claude Code receives and processes @mention                           │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────── AFTER (Cursor CLI) ───────────────────────────┐
+│                                                                         │
+│  User runs: :ClaudeCodeAdd myfile.ts 10 20                            │
+│       ↓                                                                 │
+│  Plugin: M.send_at_mention("myfile.ts", 9, 19)  [0-indexed internal] │
+│       ↓                                                                 │
+│  Check if cursor terminal exists?                                      │
+│       ↓ (YES)                                                          │
+│  M._broadcast_at_mention()                                             │
+│       ↓                                                                 │
+│  Format @mention text:                                                 │
+│    mention_text = "@myfile.ts:10-20"  [1-indexed for display]        │
+│       ↓                                                                 │
+│  terminal.send_keys("@myfile.ts:10-20 ")                              │
+│       ↓                                                                 │
+│  Get terminal buffer's job_id                                          │
+│       ↓                                                                 │
+│  vim.fn.chansend(job_id, "@myfile.ts:10-20 ")                         │
+│       ↓                                                                 │
+│  ╔═══════════════════════════════════════════╗                        │
+│  ║   Neovim Terminal Buffer                  ║                        │
+│  ║   Running: cursor                         ║                        │
+│  ║   Receives: "@myfile.ts:10-20 "           ║ ← Text typed!          │
+│  ╚═══════════════════════════════════════════╝                        │
+│       ↓                                                                 │
+│  Cursor CLI sees the text input and processes @mention                │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────── KEY DIFFERENCES ───────────────────────────────┐
+│                                                                         │
+│  ┌─ DEFAULT COMMAND ────────────────────────────────────────────┐    │
+│  │  Before: base_cmd = "claude"                                 │    │
+│  │  After:  base_cmd = "cursor"                                 │    │
+│  └──────────────────────────────────────────────────────────────┘    │
+│                                                                         │
+│  ┌─ COMMUNICATION METHOD ───────────────────────────────────────┐    │
+│  │  Before: WebSocket JSON messages                             │    │
+│  │          {type: "at_mentioned", filePath: "x", ...}          │    │
+│  │                                                               │    │
+│  │  After:  Direct terminal text input                          │    │
+│  │          "@filename" or "@filename:10-20"                    │    │
+│  └──────────────────────────────────────────────────────────────┘    │
+│                                                                         │
+│  ┌─ LINE NUMBERING ─────────────────────────────────────────────┐    │
+│  │  Before: 0-indexed (sent to Claude as 9, 19)                │    │
+│  │  After:  1-indexed display (sent to Cursor as 10, 20)       │    │
+│  └──────────────────────────────────────────────────────────────┘    │
+│                                                                         │
+│  ┌─ CONNECTION CHECK ───────────────────────────────────────────┐    │
+│  │  Before: Check if Claude connected to WebSocket              │    │
+│  │  After:  Check if terminal buffer exists                     │    │
+│  └──────────────────────────────────────────────────────────────┘    │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────── FILES MODIFIED ────────────────────────────────┐
+│                                                                         │
+│  lua/claudecode/terminal.lua                                           │
+│  ├─ Changed: base_cmd = "cursor"                                      │
+│  ├─ Renamed: get_cursor_command_and_env()                             │
+│  └─ Added:   M.send_keys(text) ← NEW FUNCTION                         │
+│                                                                         │
+│  lua/claudecode/init.lua                                               │
+│  ├─ Modified: M._broadcast_at_mention() ← MAJOR CHANGE               │
+│  │   • Removed: WebSocket broadcast                                   │
+│  │   • Added:   terminal.send_keys()                                  │
+│  │   • Format:  "@filename" or "@filename:10-20"                      │
+│  └─ Modified: M.send_at_mention()                                      │
+│      • Check terminal exists instead of WebSocket connection           │
+│                                                                         │
+│  lua/claudecode/config.lua                                             │
+│  └─ Updated: Comments to say "Cursor" instead of "Claude"             │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────── BACKWARD COMPATIBILITY ────────────────────────┐
+│                                                                         │
+│  To use Claude Code instead of Cursor:                                │
+│                                                                         │
+│  require("claudecode").setup({                                         │
+│    terminal_cmd = "claude",  ← Just change this!                      │
+│  })                                                                    │
+│                                                                         │
+│  Everything else works the same:                                       │
+│  • Same commands (ClaudeCode*)                                         │
+│  • Same keybindings                                                    │
+│  • Same terminal providers                                             │
+│  • Same configuration options                                          │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
