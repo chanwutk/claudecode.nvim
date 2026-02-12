@@ -4,6 +4,8 @@
 
 local M = {}
 
+local logger = require("cursorcode.logger")
+
 ---@type table
 local defaults = {
   split_side = "right",
