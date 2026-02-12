@@ -628,17 +628,8 @@ end
 ---@param line1 number|nil Optional start line for range-based selection
 ---@param line2 number|nil Optional end line for range-based selection
 function M.send_at_mention_for_visual_selection(line1, line2)
-  if not M.state.tracking_enabled then
-    logger.error("selection", "Selection tracking is not enabled.")
-    return false
-  end
-
-  -- Check if Cursor Code integration is running (server may or may not have clients)
-  local claudecode_main = require("claudecode")
-  if not claudecode_main.state.server then
-    logger.error("selection", "Cursor Code integration is not running.")
-    return false
-  end
+  -- Note: For cursorcode, we don't need tracking_enabled to send selections
+  -- We can send selections on-demand via direct text input
 
   local sel_to_send
 
@@ -650,19 +641,16 @@ function M.send_at_mention_for_visual_selection(line1, line2)
       return false
     end
   else
-    -- Use existing logic for visual mode or tracked selection
-    sel_to_send = M.state.latest_selection
-
-    if not sel_to_send or sel_to_send.selection.isEmpty then
-      -- Fallback: try to get current visual selection directly.
-      -- This helps if latest_selection was demoted or command was too fast.
-      local current_visual = M.get_visual_selection()
-      if current_visual and not current_visual.selection.isEmpty then
-        sel_to_send = current_visual
-      else
-        logger.warn("selection", "No visual selection to send as at-mention.")
-        return false
-      end
+    -- Try to get current visual selection directly
+    local current_visual = M.get_visual_selection()
+    if current_visual and not current_visual.selection.isEmpty then
+      sel_to_send = current_visual
+    elseif M.state.latest_selection and not M.state.latest_selection.selection.isEmpty then
+      -- Fallback to latest tracked selection if available
+      sel_to_send = M.state.latest_selection
+    else
+      logger.warn("selection", "No visual selection to send as at-mention.")
+      return false
     end
   end
 
@@ -680,16 +668,16 @@ function M.send_at_mention_for_visual_selection(line1, line2)
     return false
   end
 
-  -- Use connection-aware broadcasting from main module
+  -- Use cursorcode main module to send the at-mention
+  local cursorcode_main = require("cursorcode")
   local file_path = sel_to_send.filePath
   local start_line = sel_to_send.selection.start.line -- Already 0-indexed from selection module
   local end_line = sel_to_send.selection["end"].line -- Already 0-indexed
 
-  local success, error_msg = claudecode_main.send_at_mention(file_path, start_line, end_line, "CursorCodeSend")
+  local success, error_msg = cursorcode_main.send_at_mention(file_path, start_line, end_line, "CursorCodeSend")
 
   if success then
     logger.debug("selection", "Visual selection sent as at-mention.")
-
     return true
   else
     logger.error("selection", "Failed to send at-mention: " .. (error_msg or "unknown error"))

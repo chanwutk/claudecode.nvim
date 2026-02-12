@@ -488,12 +488,12 @@ end
 
 ---Opens or focuses the Claude terminal.
 ---@param opts_override table? Overrides for terminal appearance (split_side, split_width_percentage).
----@param cmd_args string? Arguments to append to the claude command.
+---@param cmd_args string? Arguments to append to the cursor command.
 function M.open(opts_override, cmd_args)
   local effective_config = build_config(opts_override)
-  local cmd_string, claude_env_table = get_claude_command_and_env(cmd_args)
+  local cmd_string, cursor_env_table = get_cursor_command_and_env(cmd_args)
 
-  get_provider().open(cmd_string, claude_env_table, effective_config)
+  get_provider().open(cmd_string, cursor_env_table, effective_config)
 end
 
 ---Closes the managed Cursor terminal if it's open and valid.
