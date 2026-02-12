@@ -143,14 +143,19 @@ function M.send_at_mention(file_path, start_line, end_line, context)
     -- Terminal exists, send the @mention directly
     local success, error_msg = M._send_at_mention(file_path, start_line, end_line)
     if success then
+      -- Exit visual mode in source buffer (matches claudecode.nvim behavior)
+      pcall(function()
+        if vim.api and vim.api.nvim_feedkeys then
+          local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+          vim.api.nvim_feedkeys(esc, "i", true)
+        end
+      end)
+      
       if M.state.config and M.state.config.focus_after_send then
         terminal.open()
-        -- Exit visual mode and enter insert mode so user can type immediately
+        -- Enter insert mode in terminal so user can type immediately
         vim.schedule(function()
-          -- Force exit any mode (especially visual) and enter insert mode
-          -- Using feedkeys is more reliable than mode checks + startinsert
-          local keys = vim.api.nvim_replace_termcodes('<Esc>i', true, false, true)
-          vim.api.nvim_feedkeys(keys, 'n', false)
+          vim.cmd("startinsert")
         end)
       else
         terminal.ensure_visible()
@@ -158,14 +163,20 @@ function M.send_at_mention(file_path, start_line, end_line, context)
     end
     return success, error_msg
   else
+    -- Exit visual mode in source buffer before opening terminal (matches claudecode.nvim behavior)
+    pcall(function()
+      if vim.api and vim.api.nvim_feedkeys then
+        local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+        vim.api.nvim_feedkeys(esc, "i", true)
+      end
+    end)
+    
     -- Terminal doesn't exist, open it first then send
     terminal.open()
 
-    -- Exit visual mode and enter insert mode so user can type immediately
+    -- Enter insert mode in terminal so user can type immediately
     vim.schedule(function()
-      -- Force exit any mode (especially visual) and enter insert mode
-      local keys = vim.api.nvim_replace_termcodes('<Esc>i', true, false, true)
-      vim.api.nvim_feedkeys(keys, 'n', false)
+      vim.cmd("startinsert")
     end)
 
     -- Wait a moment for terminal to be ready, then send the @mention
