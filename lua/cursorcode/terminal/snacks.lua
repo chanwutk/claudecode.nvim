@@ -21,11 +21,7 @@ local function setup_terminal_events(term_instance, config)
   -- Handle command completion/exit - only if auto_close is enabled
   if config.auto_close then
     term_instance:on("TermClose", function()
-      if vim.v.event.status ~= 0 then
-        logger.error("terminal", "Claude exited with code " .. vim.v.event.status .. ".\nCheck for any errors.")
-      end
-
-      -- Clean up
+      -- Clean up terminal instance (don't log errors - manual closes are normal)
       terminal = nil
       vim.schedule(function()
         term_instance:close({ buf = true })
