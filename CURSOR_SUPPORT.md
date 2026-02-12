@@ -11,7 +11,7 @@ The plugin now:
 
 ## How It Works
 
-When you use commands like `:CursorCodeAdd myfile.ts` or `:CursorCodeSend` in visual mode:
+When you use commands like `:CursorCLIAdd myfile.ts` or `:CursorCLISend` in visual mode:
 
 1. The plugin opens a cursor-cli terminal (if not already open)
 2. It types the file reference directly into the terminal: `@myfile.ts` or `@myfile.ts:10-20`
@@ -26,10 +26,10 @@ When you use commands like `:CursorCodeAdd myfile.ts` or `:CursorCodeSend` in vi
   config = true,
   keys = {
     { "<leader>a", nil, desc = "AI/Cursor" },
-    { "<leader>ac", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-    { "<leader>af", "<cmd>CursorCodeFocus<cr>", desc = "Focus Cursor" },
-    { "<leader>ab", "<cmd>CursorCodeAdd %<cr>", desc = "Add current buffer" },
-    { "<leader>as", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
+    { "<leader>ac", "<cmd>CursorCLI<cr>", desc = "Toggle Cursor" },
+    { "<leader>af", "<cmd>CursorCLIFocus<cr>", desc = "Focus Cursor" },
+    { "<leader>ab", "<cmd>CursorCLIAdd %<cr>", desc = "Add current buffer" },
+    { "<leader>as", "<cmd>CursorCLISend<cr>", mode = "v", desc = "Send to Cursor" },
     -- More keybindings...
   },
 }
@@ -87,38 +87,38 @@ All commands work the same as the original plugin:
 
 | Command | Description |
 |---------|-------------|
-| `:CursorCode` | Toggle cursor terminal |
-| `:CursorCodeOpen` | Open cursor terminal |
-| `:CursorCodeClose` | Close cursor terminal |
-| `:CursorCodeFocus` | Focus or toggle cursor terminal |
-| `:CursorCodeAdd <file>` | Add file to cursor context (types `@file`) |
-| `:CursorCodeAdd <file> <start> <end>` | Add file lines to context (types `@file:start-end`) |
-| `:CursorCodeSend` | Send visual selection to cursor (types `@file:lines`) |
-| `:CursorCodeTreeAdd` | Add selected file from tree explorer |
+| `:CursorCLI` | Toggle cursor terminal |
+| `:CursorCLIOpen` | Open cursor terminal |
+| `:CursorCLIClose` | Close cursor terminal |
+| `:CursorCLIFocus` | Focus or toggle cursor terminal |
+| `:CursorCLIAdd <file>` | Add file to cursor context (types `@file`) |
+| `:CursorCLIAdd <file> <start> <end>` | Add file lines to context (types `@file:start-end`) |
+| `:CursorCLISend` | Send visual selection to cursor (types `@file:lines`) |
+| `:CursorCLITreeAdd` | Add selected file from tree explorer |
 
 ## Usage Examples
 
 ### Add Current File
 ```vim
-:CursorCodeAdd %
+:CursorCLIAdd %
 ```
 This types `@currentfile.ts` into the cursor terminal.
 
 ### Add File with Line Range
 ```vim
-:CursorCodeAdd src/main.ts 10 50
+:CursorCLIAdd src/main.ts 10 50
 ```
 This types `@src/main.ts:10-50` into the cursor terminal.
 
 ### Send Visual Selection
 1. Select text in visual mode
-2. Press `<leader>as` (or run `:CursorCodeSend`)
+2. Press `<leader>as` (or run `:CursorCLISend`)
 3. The plugin types `@filename:start-end` into cursor
 
 ### Add from File Explorer
 In NvimTree, oil.nvim, or other file explorers:
 1. Navigate to a file
-2. Press `<leader>as` (or run `:CursorCodeTreeAdd`)
+2. Press `<leader>as` (or run `:CursorCLITreeAdd`)
 3. The file reference is sent to cursor
 
 ## Differences from Original
@@ -156,7 +156,7 @@ opts = {
 
 ### Terminal not responding
 If the terminal doesn't receive the `@mention`:
-1. Check that cursor terminal is active: `:CursorCodeOpen`
+1. Check that cursor terminal is active: `:CursorCLIOpen`
 2. Verify cursor CLI is running properly
 3. Try manually typing `@filename` in the cursor terminal to test
 
@@ -171,8 +171,8 @@ The plugin sends text to the terminal using vim's `chansend()`. If it's not work
 To verify the integration is working:
 
 1. Start Neovim with the plugin
-2. Run `:CursorCode` to open cursor terminal
-3. Run `:CursorCodeAdd %` to send current file
+2. Run `:CursorCLI` to open cursor terminal
+3. Run `:CursorCLIAdd %` to send current file
 4. Check the cursor terminal - you should see `@filename` typed
 
 ## Going Back to Claude Code

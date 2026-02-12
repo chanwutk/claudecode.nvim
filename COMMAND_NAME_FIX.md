@@ -18,7 +18,7 @@ The default terminal command was hardcoded as `"cursor"` in the codebase. This w
 ### Where the Error Occurred
 
 The error happened in the terminal opening flow:
-1. User runs `:CursorCode`
+1. User runs `:CursorCLI`
 2. Plugin calls `get_cursor_command_and_env()`
 3. Function returns `"cursor"` as the default command
 4. Terminal provider executes: `cursor` (via jobstart/termopen)
@@ -34,7 +34,7 @@ Updated the default command from `"cursor"` to `"agent"` throughout the codebase
 
 ### Code Changes
 
-#### 1. Terminal Module (`lua/cursorcode/terminal.lua`)
+#### 1. Terminal Module (`lua/cursor-cli/terminal.lua`)
 
 **Before** (Line 295):
 ```lua
@@ -64,7 +64,7 @@ local function get_cursor_command_and_env(cmd_args)
 end
 ```
 
-#### 2. Config Module (`lua/cursorcode/config.lua`)
+#### 2. Config Module (`lua/cursor-cli/config.lua`)
 
 **Before** (Line 11):
 ```lua
@@ -110,7 +110,7 @@ M.defaults = {
 Error: cursor: command not found
 
 Solution: Install cursor-cli or configure the path:
-require("cursorcode").setup({
+require("cursor-cli").setup({
   terminal_cmd = "/path/to/cursor",
 })
 ```
@@ -121,7 +121,7 @@ require("cursorcode").setup({
 Error: agent: command not found
 
 Solution: Install cursor-cli or configure the path:
-require("cursorcode").setup({
+require("cursor-cli").setup({
   terminal_cmd = "/path/to/agent",
 })
 ```
@@ -132,7 +132,7 @@ After the fix, verify it works:
 
 ```vim
 " 1. Open cursor terminal
-:CursorCode
+:CursorCLI
 
 " Should now execute 'agent' command instead of 'cursor'
 " Terminal should open successfully if cursor-cli is installed
@@ -144,10 +144,10 @@ You can verify what command the plugin is using:
 
 ```vim
 " Enable debug logging
-:lua require("cursorcode").setup({ log_level = "debug" })
+:lua require("cursor-cli").setup({ log_level = "debug" })
 
 " Then open terminal
-:CursorCode
+:CursorCLI
 
 " Check messages for the command being executed
 :messages
@@ -155,11 +155,11 @@ You can verify what command the plugin is using:
 
 ## Files Changed
 
-1. **lua/cursorcode/terminal.lua**
+1. **lua/cursor-cli/terminal.lua**
    - Line 295: Changed default from `"cursor"` to `"agent"`
    - Updated comment to clarify it's the cursor-cli command
 
-2. **lua/cursorcode/config.lua**
+2. **lua/cursor-cli/config.lua**
    - Line 11: Updated comment to reference `"agent"` command
 
 3. **README.md**
@@ -189,7 +189,7 @@ If you installed cursor-cli normally (with `agent` command in PATH):
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",
+  name = "cursor-cli",
   dependencies = { "folke/snacks.nvim" },
   -- No config needed - will use 'agent' by default
 }
@@ -197,14 +197,14 @@ If you installed cursor-cli normally (with `agent` command in PATH):
 
 Then just run:
 ```vim
-:CursorCode
+:CursorCLI
 ```
 
 ### Custom Installation
 
 If your cursor-cli has a different command or path:
 ```lua
-require("cursorcode").setup({
+require("cursor-cli").setup({
   terminal_cmd = "/custom/path/to/agent",
   -- or if you named it differently:
   -- terminal_cmd = "my-cursor-cli",

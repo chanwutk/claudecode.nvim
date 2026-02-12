@@ -2,12 +2,12 @@
 
 ## Common Errors
 
-### 1. Command Not Available: "E492: Not an editor command: CursorCode"
+### 1. Command Not Available: "E492: Not an editor command: CursorCLI"
 
 If you see this error:
 ```
-:CursorCode
-E492: Not an editor command: CursorCode
+:CursorCLI
+E492: Not an editor command: CursorCLI
 ```
 
 This means the plugin loaded but commands were not registered.
@@ -18,25 +18,25 @@ Try restarting Neovim. If that doesn't work:
 
 1. **Check if plugin is loaded**:
    ```vim
-   :lua print(vim.g.loaded_cursorcode)
+   :lua print(vim.g.loaded_cursor-cli)
    ```
    Should output `1`. If not, the plugin didn't load.
 
 2. **Manually trigger setup**:
    ```vim
-   :lua require("cursorcode").setup()
+   :lua require("cursor-cli").setup()
    ```
-   Then try `:CursorCode` again.
+   Then try `:CursorCLI` again.
 
 3. **Check for errors**:
    ```vim
    :messages
    ```
-   Look for any error messages about cursorcode.
+   Look for any error messages about cursor-cli.
 
 4. **Verify module loads**:
    ```vim
-   :lua print(require("cursorcode").version:string())
+   :lua print(require("cursor-cli").version:string())
    ```
    Should print version number (e.g., "1.0.0").
 
@@ -52,16 +52,16 @@ This issue was fixed in recent versions by:
 :Lazy update
 ```
 
-### 2. Module 'cursorcode' Not Found
+### 2. Module 'cursor-cli' Not Found
 
 If you see this error:
 ```
-module 'cursorcode' not found:
-  no field package.preload['cursorcode']
+module 'cursor-cli' not found:
+  no field package.preload['cursor-cli']
   ...
 ```
 
-This means Neovim cannot find the `cursorcode` Lua module. This is typically an installation or configuration issue.
+This means Neovim cannot find the `cursor-cli` Lua module. This is typically an installation or configuration issue.
 
 ## Solutions
 
@@ -76,7 +76,7 @@ Make sure you're using the correct repository name and module name:
 ```lua
 {
   "chanwutk/cursor-cli.nvim",  -- ✅ Correct repository name
-  name = "cursorcode",           -- ✅ Important: set internal name
+  name = "cursor-cli",           -- ✅ Important: set internal name
   dependencies = { "folke/snacks.nvim" },
   -- Config is optional - commands auto-register on load
 }
@@ -84,7 +84,7 @@ Make sure you're using the correct repository name and module name:
 
 **Key points:**
 - Repository: `"chanwutk/cursor-cli.nvim"`
-- Module name: `name = "cursorcode"` (this is crucial!)
+- Module name: `name = "cursor-cli"` (this is crucial!)
 - The module name tells lazy.nvim what to call internally
 
 #### For packer.nvim
@@ -92,7 +92,7 @@ Make sure you're using the correct repository name and module name:
 ```lua
 use {
   'chanwutk/cursor-cli.nvim',
-  as = 'cursorcode',  -- ✅ Important: set internal name
+  as = 'cursor-cli',  -- ✅ Important: set internal name
   requires = { 'folke/snacks.nvim' },
 }
 ```
@@ -117,7 +117,7 @@ use {
    ```vim
    :Lazy
    ```
-   Look for `cursorcode` in the list
+   Look for `cursor-cli` in the list
 
 #### With packer.nvim
 
@@ -135,17 +135,17 @@ Verify the plugin is in your runtimepath:
 :lua print(vim.inspect(vim.api.nvim_list_runtime_paths()))
 ```
 
-Look for a path containing `cursor-cli.nvim` or `cursorcode`.
+Look for a path containing `cursor-cli.nvim` or `cursor-cli`.
 
 ### Solution 4: Manual Verification
 
 Check if the module files exist:
 
 ```vim
-:lua print(vim.fn.stdpath('data') .. '/lazy/cursorcode')
+:lua print(vim.fn.stdpath('data') .. '/lazy/cursor-cli')
 ```
 
-The path should exist and contain `lua/cursorcode/init.lua`.
+The path should exist and contain `lua/cursor-cli/init.lua`.
 
 ### Solution 5: Check for Naming Conflicts
 
@@ -159,7 +159,7 @@ If you previously had `claudecode.nvim` installed, make sure it's properly remov
 },
 {
   "chanwutk/cursor-cli.nvim",   -- Cursor CLI plugin
-  name = "cursorcode",            -- Different internal name
+  name = "cursor-cli",            -- Different internal name
   dependencies = { "folke/snacks.nvim" },
 }
 ```
@@ -171,19 +171,19 @@ Add debug output to see what's happening:
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",
+  name = "cursor-cli",
   dependencies = { "folke/snacks.nvim" },
   init = function()
     print("Loading cursor-cli.nvim...")
   end,
   config = function()
-    print("Configuring cursorcode...")
-    local ok, cursorcode = pcall(require, "cursorcode")
+    print("Configuring cursor-cli...")
+    local ok, cursor-cli = pcall(require, "cursor-cli")
     if ok then
-      print("✓ cursorcode module loaded successfully")
-      cursorcode.setup({})
+      print("✓ cursor-cli module loaded successfully")
+      cursor-cli.setup({})
     else
-      print("✗ Failed to load cursorcode:", cursorcode)
+      print("✗ Failed to load cursor-cli:", cursor-cli)
     end
   end,
 }
@@ -194,16 +194,16 @@ Add debug output to see what's happening:
 The error mentions `init.lua:43`. Check line 43 of your config:
 
 ```lua
--- Make sure you're not trying to require cursorcode before it's installed
+-- Make sure you're not trying to require cursor-cli before it's installed
 -- This is WRONG if it's not wrapped in a config function:
-local cursorcode = require("cursorcode")  -- ❌ This will fail if not in config/init
+local cursor-cli = require("cursor-cli")  -- ❌ This will fail if not in config/init
 
 -- This is CORRECT:
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",
+  name = "cursor-cli",
   config = function()
-    require("cursorcode").setup({})  -- ✅ Module loaded after plugin is available
+    require("cursor-cli").setup({})  -- ✅ Module loaded after plugin is available
   end,
 }
 ```
@@ -217,7 +217,7 @@ Try this minimal configuration to test:
 require("lazy").setup({
   {
     "chanwutk/cursor-cli.nvim",
-    name = "cursorcode",
+    name = "cursor-cli",
     dependencies = { "folke/snacks.nvim" },
   },
 })
@@ -225,7 +225,7 @@ require("lazy").setup({
 
 Then test:
 ```vim
-:lua print(require("cursorcode").version:string())
+:lua print(require("cursor-cli").version:string())
 ```
 
 Should output the version number if working correctly.
@@ -246,7 +246,7 @@ Should output the version number if working correctly.
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
-  -- Missing: name = "cursorcode"
+  -- Missing: name = "cursor-cli"
 }
 ```
 
@@ -254,7 +254,7 @@ Should output the version number if working correctly.
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",  -- This is required!
+  name = "cursor-cli",  -- This is required!
 }
 ```
 
@@ -292,6 +292,6 @@ If you're still experiencing issues:
 
 The issue is almost always related to:
 - Incorrect repository name in config
-- Missing `name = "cursorcode"` in lazy.nvim
+- Missing `name = "cursor-cli"` in lazy.nvim
 - Plugin not properly installed
 - Trying to require the module before it's loaded

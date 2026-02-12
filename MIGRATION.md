@@ -11,8 +11,8 @@ The repository has been renamed from `chanwutk/claudecode.nvim` to `chanwutk/cur
 - **New**: `chanwutk/cursor-cli.nvim`
 
 ### What Stayed the Same
-- **Module name**: `cursorcode` (unchanged)
-- **Commands**: `CursorCode*` (unchanged)
+- **Module name**: `cursor-cli` (unchanged)
+- **Commands**: `CursorCLI*` (unchanged)
 - **Internal structure**: All Lua modules remain the same
 
 ## Migration Steps
@@ -23,7 +23,7 @@ The repository has been renamed from `chanwutk/claudecode.nvim` to `chanwutk/cur
 ```lua
 {
   "chanwutk/claudecode.nvim",  -- Old repository name
-  name = "cursorcode",
+  name = "cursor-cli",
   dependencies = { "folke/snacks.nvim" },
 }
 ```
@@ -32,7 +32,7 @@ The repository has been renamed from `chanwutk/claudecode.nvim` to `chanwutk/cur
 ```lua
 {
   "chanwutk/cursor-cli.nvim",  -- ✅ New repository name
-  name = "cursorcode",           -- Same module name
+  name = "cursor-cli",           -- Same module name
   dependencies = { "folke/snacks.nvim" },
 }
 ```
@@ -58,7 +58,7 @@ The repository has been renamed from `chanwutk/claudecode.nvim` to `chanwutk/cur
 
 4. **Verify**:
    ```vim
-   :CursorCode
+   :CursorCLI
    ```
 
 ### For packer.nvim Users
@@ -67,7 +67,7 @@ The repository has been renamed from `chanwutk/claudecode.nvim` to `chanwutk/cur
 ```lua
 use {
   'chanwutk/claudecode.nvim',
-  as = 'cursorcode',
+  as = 'cursor-cli',
   requires = { 'folke/snacks.nvim' },
 }
 ```
@@ -76,7 +76,7 @@ use {
 ```lua
 use {
   'chanwutk/cursor-cli.nvim',  -- ✅ New repository name
-  as = 'cursorcode',             -- Same module name
+  as = 'cursor-cli',             -- Same module name
   requires = { 'folke/snacks.nvim' },
 }
 ```
@@ -102,7 +102,7 @@ use {
 
 4. **Verify**:
    ```vim
-   :CursorCode
+   :CursorCLI
    ```
 
 ### For Manual Installation
@@ -111,7 +111,7 @@ If you cloned the repository manually:
 
 1. **Update remote URL**:
    ```bash
-   cd ~/.local/share/nvim/site/pack/*/start/cursorcode
+   cd ~/.local/share/nvim/site/pack/*/start/cursor-cli
    git remote set-url origin https://github.com/chanwutk/cursor-cli.nvim.git
    git pull
    ```
@@ -119,8 +119,8 @@ If you cloned the repository manually:
 2. **Or clone fresh**:
    ```bash
    cd ~/.local/share/nvim/site/pack/*/start/
-   rm -rf cursorcode
-   git clone https://github.com/chanwutk/cursor-cli.nvim.git cursorcode
+   rm -rf cursor-cli
+   git clone https://github.com/chanwutk/cursor-cli.nvim.git cursor-cli
    ```
 
 ## Verification
@@ -129,22 +129,22 @@ After migration, verify everything works:
 
 ```vim
 " Check module loads
-:lua print(require("cursorcode").version:string())
+:lua print(require("cursor-cli").version:string())
 
 " Check commands exist
-:CursorCode
-:CursorCodeAdd %
-:CursorCodeSend
+:CursorCLI
+:CursorCLIAdd %
+:CursorCLISend
 ```
 
 ## Troubleshooting
 
-### Error: "module 'cursorcode' not found"
+### Error: "module 'cursor-cli' not found"
 
 This means the plugin isn't installed correctly. See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for solutions.
 
 **Quick fix**:
-1. Make sure `name = "cursorcode"` is in your config
+1. Make sure `name = "cursor-cli"` is in your config
 2. Run `:Lazy clean` then `:Lazy install`
 3. Restart Neovim
 
@@ -154,7 +154,7 @@ The old repository name might still be cached:
 
 1. Remove the plugin directory:
    ```bash
-   rm -rf ~/.local/share/nvim/lazy/cursorcode
+   rm -rf ~/.local/share/nvim/lazy/cursor-cli
    ```
 
 2. Reinstall:
@@ -168,7 +168,7 @@ The old repository name might still be cached:
    ```vim
    :Lazy
    ```
-   Look for `cursorcode` in the list
+   Look for `cursor-cli` in the list
 
 2. Check for errors:
    ```vim
@@ -177,14 +177,14 @@ The old repository name might still be cached:
 
 3. Try loading manually:
    ```vim
-   :lua require("cursorcode").setup()
+   :lua require("cursor-cli").setup()
    ```
 
 ## No Breaking Changes
 
 **Important**: This is just a repository rename. There are no breaking changes to:
-- Module names (`cursorcode`)
-- Command names (`CursorCode*`)
+- Module names (`cursor-cli`)
+- Command names (`CursorCLI*`)
 - Configuration options
 - API or functionality
 
@@ -205,7 +205,7 @@ If you want both the original Claude Code plugin and this Cursor plugin:
   -- Cursor CLI
   {
     "chanwutk/cursor-cli.nvim",
-    name = "cursorcode",
+    name = "cursor-cli",
     dependencies = { "folke/snacks.nvim" },
   },
 }

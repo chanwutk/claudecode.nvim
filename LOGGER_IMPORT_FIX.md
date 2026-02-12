@@ -3,7 +3,7 @@
 ## Issue
 Users encountered this error when sending files to cursor:
 ```
-Error executing Lua callback: ...lua/cursorcode/terminal.lua:585: 
+Error executing Lua callback: ...lua/cursor-cli/terminal.lua:585: 
 attempt to index global 'logger' (a nil value)
 stack traceback:
   terminal.lua:585: in function 'send_keys'
@@ -34,20 +34,20 @@ The `terminal.lua` file used `logger` at **14 different locations** but **never 
 - Line 585: `logger.debug("terminal", "Sent text to cursor terminal...")` ← **Error occurred here**
 
 ### Comparison with other modules
-All other cursorcode modules properly import logger:
+All other cursor-cli modules properly import logger:
 
 ```lua
 -- init.lua
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 -- integrations.lua
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 -- selection.lua
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 -- visual_commands.lua
-local logger = require("cursorcode.logger")
+local logger = require("cursor-cli.logger")
 
 -- terminal.lua (BEFORE FIX)
 -- ❌ NO IMPORT!
@@ -60,11 +60,11 @@ Added the missing logger import at the top of `terminal.lua`:
 ```lua
 --- Module to manage a dedicated vertical split terminal for Cursor CLI.
 --- Supports Snacks.nvim or a native Neovim terminal fallback.
---- @module 'cursorcode.terminal'
+--- @module 'cursor-cli.terminal'
 
 local M = {}
 
-local logger = require("cursorcode.logger")  -- ← ADDED THIS LINE
+local logger = require("cursor-cli.logger")  -- ← ADDED THIS LINE
 
 ---@type table
 local defaults = {
@@ -73,7 +73,7 @@ local defaults = {
 ```
 
 ### Changed Files
-- `lua/cursorcode/terminal.lua` - Added logger import on line 7
+- `lua/cursor-cli/terminal.lua` - Added logger import on line 7
 
 ## Impact
 
@@ -115,7 +115,7 @@ To verify the fix is working:
 
 4. **Should work without errors**. If you have debug logging enabled:
    ```lua
-   require("cursorcode").setup({
+   require("cursor-cli").setup({
      log_level = "debug",
    })
    ```

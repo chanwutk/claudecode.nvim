@@ -20,7 +20,7 @@ Updated all repository references from `chanwutk/claudecode.nvim` to `chanwutk/c
 - ✅ STANDALONE_IMPLEMENTATION_SUMMARY.md - Updated architecture docs
 
 ### 2. New Documentation (3 files)
-- ✅ **TROUBLESHOOTING.md** - Comprehensive guide for "module 'cursorcode' not found" errors
+- ✅ **TROUBLESHOOTING.md** - Comprehensive guide for "module 'cursor-cli' not found" errors
   - Solutions for lazy.nvim and packer.nvim
   - Common configuration mistakes
   - Debug steps and verification
@@ -35,7 +35,7 @@ Updated all repository references from `chanwutk/claudecode.nvim` to `chanwutk/c
 ### 3. README Enhancements
 - Updated title to `cursor-cli.nvim`
 - Added prominent repository rename notice
-- Added critical note about `name = "cursorcode"` requirement
+- Added critical note about `name = "cursor-cli"` requirement
 - Added quick troubleshooting section
 - Linked to detailed troubleshooting guide
 
@@ -46,8 +46,8 @@ Updated all repository references from `chanwutk/claudecode.nvim` to `chanwutk/c
 - **New**: `chanwutk/cursor-cli.nvim`
 
 ### Module Name (Unchanged)
-- **Module**: `cursorcode`
-- **Commands**: `CursorCode*`
+- **Module**: `cursor-cli`
+- **Commands**: `CursorCLI*`
 
 ### Installation
 
@@ -55,7 +55,7 @@ Updated all repository references from `chanwutk/claudecode.nvim` to `chanwutk/c
 ```lua
 {
   "chanwutk/cursor-cli.nvim",  -- ✅ New repository name
-  name = "cursorcode",           -- ✅ Module name (REQUIRED!)
+  name = "cursor-cli",           -- ✅ Module name (REQUIRED!)
   dependencies = { "folke/snacks.nvim" },
 }
 ```
@@ -68,13 +68,13 @@ Updated all repository references from `chanwutk/claudecode.nvim` to `chanwutk/c
 -- ❌ Wrong: Missing module name
 {
   "chanwutk/cursor-cli.nvim",
-  -- Missing: name = "cursorcode"
+  -- Missing: name = "cursor-cli"
 }
 
 -- ✅ Correct
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",
+  name = "cursor-cli",
 }
 ```
 
@@ -85,13 +85,13 @@ Updated all repository references from `chanwutk/claudecode.nvim` to `chanwutk/c
 
 ### Required Actions for Existing Users
 1. Update repository name in config: `"chanwutk/claudecode.nvim"` → `"chanwutk/cursor-cli.nvim"`
-2. Ensure `name = "cursorcode"` is present in lazy.nvim config
+2. Ensure `name = "cursor-cli"` is present in lazy.nvim config
 3. Run `:Lazy clean` and `:Lazy install`
 4. Restart Neovim
 
 ### For New Users
 - Just use the new repository name: `"chanwutk/cursor-cli.nvim"`
-- Make sure to include `name = "cursorcode"`
+- Make sure to include `name = "cursor-cli"`
 - See [README.md](./README.md) for quick start
 
 ## Documentation Structure
@@ -118,17 +118,17 @@ Users should verify after migration:
 
 ```vim
 " 1. Check module loads
-:lua print(require("cursorcode").version:string())
+:lua print(require("cursor-cli").version:string())
 
 " 2. Check commands exist
-:CursorCode
+:CursorCLI
 
 " 3. Test file addition
-:CursorCodeAdd %
+:CursorCLIAdd %
 
 " 4. Test in lazy.nvim
 :Lazy
-" Look for 'cursorcode' in the list
+" Look for 'cursor-cli' in the list
 ```
 
 ## Support
@@ -136,7 +136,7 @@ Users should verify after migration:
 If users encounter issues:
 1. Check [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 2. Follow [MIGRATION.md](./MIGRATION.md) steps
-3. Verify `name = "cursorcode"` is in config
+3. Verify `name = "cursor-cli"` is in config
 4. Ensure plugin is installed: `:Lazy`
 
 ## Git History

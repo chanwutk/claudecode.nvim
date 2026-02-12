@@ -11,14 +11,14 @@
 
 > 🎯 **Repository Information**:
 > - **Repository**: `chanwutk/cursor-cli.nvim`
-> - **Module name**: `cursorcode`
-> - **Commands**: `CursorCode*` (not `ClaudeCode*`)
+> - **Module name**: `cursor-cli`
+> - **Commands**: `CursorCLI*` (not `ClaudeCode*`)
 > - **CLI command**: `agent` (cursor-cli executable)
 
 > 💡 **Works Alongside claudecode.nvim**:
 > - This plugin and `coder/claudecode.nvim` can coexist peacefully
-> - Different module names: `cursorcode` vs `claudecode`
-> - Different commands: `CursorCode*` vs `ClaudeCode*`
+> - Different module names: `cursor-cli` vs `claudecode`
+> - Different commands: `CursorCLI*` vs `ClaudeCode*`
 > - See [QUICKSTART.md](./QUICKSTART.md) for dual installation guide
 
 ## Quick Start
@@ -28,16 +28,16 @@
 ```lua
 {
   "chanwutk/cursor-cli.nvim",  -- Repository name
-  name = "cursorcode",           -- Module name (important!)
+  name = "cursor-cli",           -- Module name (important!)
   dependencies = { "folke/snacks.nvim" },
   -- Config is optional - commands auto-register
 }
 ```
 
-**Important**: Make sure to include `name = "cursorcode"` in your configuration!
+**Important**: Make sure to include `name = "cursor-cli"` in your configuration!
     -- Diff management
-    { "<leader>aa", "<cmd>CursorCodeDiffAccept<cr>", desc = "Accept diff" },
-    { "<leader>ad", "<cmd>CursorCodeDiffDeny<cr>", desc = "Deny diff" },
+    { "<leader>aa", "<cmd>CursorCLIDiffAccept<cr>", desc = "Accept diff" },
+    { "<leader>ad", "<cmd>CursorCLIDiffDeny<cr>", desc = "Deny diff" },
   },
 }
 ```
@@ -58,13 +58,13 @@ This plugin provides Cursor CLI integration for Neovim:
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",  -- ⚠️ Important: set module name
+  name = "cursor-cli",  -- ⚠️ Important: set module name
   dependencies = { "folke/snacks.nvim" },
   -- Config is optional - commands auto-register
   keys = {
-    { "<leader>cc", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-    { "<leader>cb", "<cmd>CursorCodeAdd %<cr>", desc = "Add current buffer" },
-    { "<leader>cs", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
+    { "<leader>cc", "<cmd>CursorCLI<cr>", desc = "Toggle Cursor" },
+    { "<leader>cb", "<cmd>CursorCLIAdd %<cr>", desc = "Add current buffer" },
+    { "<leader>cs", "<cmd>CursorCLISend<cr>", mode = "v", desc = "Send to Cursor" },
     -- More keybindings...
   },
 }
@@ -86,7 +86,7 @@ return {
   -- This Cursor CLI plugin
   {
     "chanwutk/cursor-cli.nvim",
-    name = "cursorcode",  -- Different module name!
+    name = "cursor-cli",  -- Different module name!
     dependencies = { "folke/snacks.nvim" },
   },
 }
@@ -94,7 +94,7 @@ return {
 
 **Important Notes:**
 - **Repository**: `"chanwutk/cursor-cli.nvim"`
-- **Module name**: `name = "cursorcode"` (required for lazy.nvim)
+- **Module name**: `name = "cursor-cli"` (required for lazy.nvim)
 - Default cursor-cli command is `"agent"`
 - Commands auto-register on plugin load
 
@@ -102,9 +102,9 @@ See [CURSORCODE_README.md](./CURSORCODE_README.md) for complete documentation.
 
 ## Troubleshooting
 
-If you get "module 'cursorcode' not found" errors:
+If you get "module 'cursor-cli' not found" errors:
 
-1. Make sure you have `name = "cursorcode"` in your lazy.nvim config
+1. Make sure you have `name = "cursor-cli"` in your lazy.nvim config
 2. Reinstall the plugin: `:Lazy clean` then `:Lazy install`
 3. See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed solutions
 
@@ -222,19 +222,19 @@ Configure the plugin with the detected path:
 
 ```vim
 " Launch Claude Code in a split
-:CursorCode
+:CursorCLI
 
 " Claude now sees your current file and selections in real-time!
 
 " Send visual selection as context
-:'<,'>CursorCodeSend
+:'<,'>CursorCLISend
 
 " Claude can open files, show diffs, and more
 ```
 
 ## Usage
 
-1. **Launch Claude**: Run `:CursorCode` to open Claude in a split terminal
+1. **Launch Claude**: Run `:CursorCLI` to open Claude in a split terminal
 2. **Send context**:
    - Select text in visual mode and use `<leader>as` to send it to Claude
    - In `nvim-tree`/`neo-tree`/`oil.nvim`/`mini.nvim`, press `<leader>as` on a file to add it to Claude's context
@@ -246,13 +246,13 @@ Configure the plugin with the detected path:
 
 ## Key Commands
 
-- `:CursorCode` - Toggle the Claude Code terminal window
-- `:CursorCodeFocus` - Smart focus/toggle Claude terminal
-- `:CursorCodeSelectModel` - Select Claude model and open terminal with optional arguments
-- `:CursorCodeSend` - Send current visual selection to Claude
-- `:CursorCodeAdd <file-path> [start-line] [end-line]` - Add specific file to Claude context with optional line range
-- `:CursorCodeDiffAccept` - Accept diff changes
-- `:CursorCodeDiffDeny` - Reject diff changes
+- `:CursorCLI` - Toggle the Claude Code terminal window
+- `:CursorCLIFocus` - Smart focus/toggle Claude terminal
+- `:CursorCLISelectModel` - Select Claude model and open terminal with optional arguments
+- `:CursorCLISend` - Send current visual selection to Claude
+- `:CursorCLIAdd <file-path> [start-line] [end-line]` - Add specific file to Claude context with optional line range
+- `:CursorCLIDiffAccept` - Accept diff changes
+- `:CursorCLIDiffDeny` - Reject diff changes
 
 ## Working with Diffs
 
@@ -390,7 +390,7 @@ return {
     "coder/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
     keys = {
-      { toggle_key, "<cmd>CursorCodeFocus<cr>", desc = "Claude Code", mode = { "n", "x" } },
+      { toggle_key, "<cmd>CursorCLIFocus<cr>", desc = "Claude Code", mode = { "n", "x" } },
     },
     opts = {
       terminal = {
@@ -427,7 +427,7 @@ return {
     "coder/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
     keys = {
-      { toggle_key, "<cmd>CursorCodeFocus<cr>", desc = "Claude Code", mode = { "n", "x" } },
+      { toggle_key, "<cmd>CursorCLIFocus<cr>", desc = "Claude Code", mode = { "n", "x" } },
     },
     opts = {
       terminal = {
@@ -479,9 +479,9 @@ require("claudecode").setup({
   "coder/claudecode.nvim",
   dependencies = { "folke/snacks.nvim" },
   keys = {
-    { "<C-,>", "<cmd>CursorCodeFocus<cr>", desc = "Claude Code (Ctrl+,)", mode = { "n", "x" } },
-    { "<M-,>", "<cmd>CursorCodeFocus<cr>", desc = "Claude Code (Alt+,)", mode = { "n", "x" } },
-    { "<leader>tc", "<cmd>CursorCodeFocus<cr>", desc = "Toggle Claude", mode = { "n", "x" } },
+    { "<C-,>", "<cmd>CursorCLIFocus<cr>", desc = "Claude Code (Ctrl+,)", mode = { "n", "x" } },
+    { "<M-,>", "<cmd>CursorCLIFocus<cr>", desc = "Claude Code (Alt+,)", mode = { "n", "x" } },
+    { "<leader>tc", "<cmd>CursorCLIFocus<cr>", desc = "Toggle Claude", mode = { "n", "x" } },
   },
   opts = {
     terminal = {
@@ -562,7 +562,7 @@ You have to take care of launching CC and connecting it to the IDE yourself. (e.
 
 Notes:
 
-- No windows/buffers are created. `:CursorCode` and related commands will not open anything.
+- No windows/buffers are created. `:CursorCLI` and related commands will not open anything.
 - The WebSocket server still starts and broadcasts work as usual. Launch the Claude CLI externally when desired.
 
 ### External Terminal Provider
@@ -823,7 +823,7 @@ opts = {
 
 ## Troubleshooting
 
-- **Claude not connecting?** Check `:CursorCodeStatus` and verify lock file exists in `~/.claude/ide/` (or `$CLAUDE_CONFIG_DIR/ide/` if `CLAUDE_CONFIG_DIR` is set)
+- **Claude not connecting?** Check `:CursorCLIStatus` and verify lock file exists in `~/.claude/ide/` (or `$CLAUDE_CONFIG_DIR/ide/` if `CLAUDE_CONFIG_DIR` is set)
 - **Need debug logs?** Set `log_level = "debug"` in opts
 - **Terminal issues?** Try `provider = "native"` if using snacks.nvim
 - **Local installation not working?** If you used `claude migrate-installer`, set `terminal_cmd = "~/.claude/local/claude"` in your config. Check `which claude` vs `ls ~/.claude/local/claude` to verify your installation type.

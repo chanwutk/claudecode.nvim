@@ -176,7 +176,7 @@ This investigation was prompted by a user asking the right question. **Thank you
 - `INVESTIGATION_SUMMARY.md` - This file
 
 ### Code
-- `lua/cursorcode/init.lua` - Updated visual mode handling (2 locations)
+- `lua/cursor-cli/init.lua` - Updated visual mode handling (2 locations)
 
 ### Commits
 - 090f96a - Code changes

@@ -1,12 +1,12 @@
-# Fix: CursorCode Command Not Available
+# Fix: CursorCLI Command Not Available
 
 ## Issue
 
-Users reported that even after following the setup instructions, the `:CursorCode` command was not available:
+Users reported that even after following the setup instructions, the `:CursorCLI` command was not available:
 
 ```
-:CursorCode
-E492: Not an editor command: CursorCode
+:CursorCLI
+E492: Not an editor command: CursorCLI
 ```
 
 ## Root Causes
@@ -17,14 +17,14 @@ The original plugin loader used `vim.defer_fn(fn, 0)` to schedule the setup:
 
 ```lua
 vim.defer_fn(function()
-  local ok, cursorcode = pcall(require, "cursorcode")
+  local ok, cursor-cli = pcall(require, "cursor-cli")
   if ok then
-    cursorcode.setup(config)
+    cursor-cli.setup(config)
   end
 end, 0)
 ```
 
-**Problem**: `defer_fn` schedules the function to run "later", but there's no guarantee when. Users could try to use `:CursorCode` before the deferred function executed, resulting in the command not being found.
+**Problem**: `defer_fn` schedules the function to run "later", but there's no guarantee when. Users could try to use `:CursorCLI` before the deferred function executed, resulting in the command not being found.
 
 ### 2. Early Config Module Loading
 
@@ -32,7 +32,7 @@ The `init.lua` file required the config module at the module level:
 
 ```lua
 M.state = {
-  config = require("cursorcode.config").defaults,
+  config = require("cursor-cli.config").defaults,
   initialized = false,
 }
 ```
@@ -50,25 +50,25 @@ If the setup failed for any reason, the error wasn't clearly reported, making it
 Replaced `vim.defer_fn` with a proper VimEnter autocmd:
 
 ```lua
-local function setup_cursorcode()
-  local ok, cursorcode = pcall(require, "cursorcode")
+local function setup_cursor-cli()
+  local ok, cursor-cli = pcall(require, "cursor-cli")
   if ok then
-    local config = vim.g.cursorcode_user_config or vim.g.cursorcode_auto_setup or {}
-    local setup_ok, setup_err = pcall(cursorcode.setup, config)
+    local config = vim.g.cursor-cli_user_config or vim.g.cursor-cli_auto_setup or {}
+    local setup_ok, setup_err = pcall(cursor-cli.setup, config)
     if not setup_ok then
-      vim.api.nvim_err_writeln("cursorcode.nvim: setup failed: " .. tostring(setup_err))
+      vim.api.nvim_err_writeln("cursor-cli.nvim: setup failed: " .. tostring(setup_err))
     end
   else
-    vim.api.nvim_err_writeln("cursorcode.nvim: failed to load module: " .. tostring(cursorcode))
+    vim.api.nvim_err_writeln("cursor-cli.nvim: failed to load module: " .. tostring(cursor-cli))
   end
 end
 
 if vim.v.vim_did_enter == 1 then
-  setup_cursorcode()
+  setup_cursor-cli()
 else
   vim.api.nvim_create_autocmd("VimEnter", {
     callback = function()
-      setup_cursorcode()
+      setup_cursor-cli()
     end,
     once = true,
   })
@@ -97,7 +97,7 @@ The config is now properly initialized in the `setup()` function:
 ```lua
 function M.setup(opts)
   opts = opts or {}
-  local config = require("cursorcode.config")
+  local config = require("cursor-cli.config")
   M.state.config = config.apply(opts)
   -- ...
 end
@@ -114,20 +114,20 @@ After the fix, you can verify it works:
 
 ```vim
 " 1. Check plugin is loaded
-:lua print(vim.g.loaded_cursorcode)
+:lua print(vim.g.loaded_cursor-cli)
 " Should output: 1
 
 " 2. Check module version
-:lua print(require("cursorcode").version:string())
+:lua print(require("cursor-cli").version:string())
 " Should output: 1.0.0 (or similar)
 
 " 3. Try the command
-:CursorCode
+:CursorCLI
 " Should open the cursor terminal (or show appropriate error if cursor not installed)
 
-" 4. List all CursorCode commands
-:command CursorCode
-" Should show the CursorCode command and its description
+" 4. List all CursorCLI commands
+:command CursorCLI
+" Should show the CursorCLI command and its description
 ```
 
 ## For Users
@@ -147,14 +147,14 @@ After the fix, you can verify it works:
 
 3. **Manually trigger setup** (if needed):
    ```vim
-   :lua require("cursorcode").setup()
+   :lua require("cursor-cli").setup()
    ```
 
 4. **Verify installation**:
    ```vim
    :Lazy
    ```
-   Make sure `cursorcode` is in the list.
+   Make sure `cursor-cli` is in the list.
 
 ### Proper Configuration
 
@@ -163,7 +163,7 @@ Make sure your lazy.nvim config includes the `name` field:
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",  -- ✅ This is required!
+  name = "cursor-cli",  -- ✅ This is required!
   dependencies = { "folke/snacks.nvim" },
 }
 ```

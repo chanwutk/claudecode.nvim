@@ -12,23 +12,23 @@ Users encountered this error when trying to send selections to Cursor:
 
 ### 1. Wrong Plugin Branding in Logger
 
-The logger module was using "ClaudeCode" branding instead of "CursorCode":
-- Log prefix: `[ClaudeCode]` should be `[CursorCode]`
-- Notification titles: "ClaudeCode Error/Warning" should be "CursorCode Error/Warning"
+The logger module was using "ClaudeCode" branding instead of "CursorCLI":
+- Log prefix: `[ClaudeCode]` should be `[CursorCLI]`
+- Notification titles: "ClaudeCode Error/Warning" should be "CursorCLI Error/Warning"
 - Module documentation referred to "Claude Code" instead of "Cursor Code"
 
 ### 2. Selection Tracking Incompatibility
 
-The selection tracking module was copied from the claudecode plugin but never adapted for cursorcode's architecture:
+The selection tracking module was copied from the claudecode plugin but never adapted for cursor-cli's architecture:
 
 **ClaudeCode's Architecture**:
 - Has WebSocket server
 - Real-time selection broadcasting to Claude Code via MCP protocol
 - Selection updates sent automatically as user moves cursor
 
-**CursorCode's Architecture**:
+**CursorCLI's Architecture**:
 - No WebSocket server (types text directly to terminal)
-- @mentions sent on-demand via commands like `:CursorCodeAdd`
+- @mentions sent on-demand via commands like `:CursorCLIAdd`
 - No need for real-time selection broadcasting
 
 **The Problem**:
@@ -40,7 +40,7 @@ The selection tracking module was copied from the claudecode plugin but never ad
 
 ### 1. Fixed Logger Branding
 
-**File**: `lua/cursorcode/logger.lua`
+**File**: `lua/cursor-cli/logger.lua`
 
 **Changes**:
 ```lua
@@ -49,8 +49,8 @@ local prefix = "[ClaudeCode]"
 vim.notify(prefix .. " " .. message, vim.log.levels.ERROR, { title = "ClaudeCode Error" })
 
 -- After  
-local prefix = "[CursorCode]"
-vim.notify(prefix .. " " .. message, vim.log.levels.ERROR, { title = "CursorCode Error" })
+local prefix = "[CursorCLI]"
+vim.notify(prefix .. " " .. message, vim.log.levels.ERROR, { title = "CursorCLI Error" })
 ```
 
 **Also Updated**:
@@ -60,7 +60,7 @@ vim.notify(prefix .. " " .. message, vim.log.levels.ERROR, { title = "CursorCode
 
 ### 2. Disabled Selection Tracking
 
-**File**: `lua/cursorcode/config.lua`
+**File**: `lua/cursor-cli/config.lua`
 
 **Changes**:
 ```lua
@@ -77,15 +77,15 @@ M.defaults = {
 }
 ```
 
-**Reason**: Cursorcode doesn't have a WebSocket server to broadcast selections to. Commands like `:CursorCodeAdd` and `:CursorCodeSend` directly capture and send the current selection when invoked.
+**Reason**: Cursorcode doesn't have a WebSocket server to broadcast selections to. Commands like `:CursorCLIAdd` and `:CursorCLISend` directly capture and send the current selection when invoked.
 
-**File**: `lua/cursorcode/init.lua`
+**File**: `lua/cursor-cli/init.lua`
 
 **Removed** (lines 209-215):
 ```lua
 -- This code tried to setup selection tracking but selection.lua has no setup() function
 if M.state.config.track_selection then
-  local selection_ok, selection_module = pcall(require, "cursorcode.selection")
+  local selection_ok, selection_module = pcall(require, "cursor-cli.selection")
   if selection_ok and type(selection_module.setup) == "function" then
     selection_module.setup(M.state.config)
   end
@@ -99,7 +99,7 @@ end
 Even with selection tracking disabled, selections still work perfectly:
 
 1. **User makes visual selection**
-2. **User runs** `:CursorCodeSend` or `:CursorCodeAdd`
+2. **User runs** `:CursorCLISend` or `:CursorCLIAdd`
 3. **Plugin captures selection** from the current buffer
 4. **Plugin formats** as `@filename:start-end`
 5. **Plugin types** the @mention directly into cursor terminal
@@ -110,8 +110,8 @@ Even with selection tracking disabled, selections still work perfectly:
 
 1. ✅ **Simplified Architecture**: No unused selection tracking code
 2. ✅ **No Errors**: Selection tracking won't try to initialize without a server
-3. ✅ **Correct Branding**: All messages show "[CursorCode]" not "[ClaudeCode]"
-4. ✅ **Functionality Preserved**: Commands like :CursorCodeSend still work perfectly
+3. ✅ **Correct Branding**: All messages show "[CursorCLI]" not "[ClaudeCode]"
+4. ✅ **Functionality Preserved**: Commands like :CursorCLISend still work perfectly
 
 ## Verification
 
@@ -122,7 +122,7 @@ Even with selection tracking disabled, selections still work perfectly:
 :normal! ggVG
 
 " Send to cursor - should work without error
-:CursorCodeSend
+:CursorCLISend
 ```
 
 **Before**: `[ClaudeCode] [selection] [ERROR] Selection tracking is not enabled.`  
@@ -132,16 +132,16 @@ Even with selection tracking disabled, selections still work perfectly:
 
 ```vim
 " Trigger any error (e.g., send without terminal)
-:CursorCodeAdd nonexistent.txt
+:CursorCLIAdd nonexistent.txt
 ```
 
 **Before**: Error shows `[ClaudeCode] ...`  
-**After**: Error shows `[CursorCode] ...`
+**After**: Error shows `[CursorCLI] ...`
 
 ### Verify Config
 
 ```vim
-:lua print(vim.inspect(require("cursorcode").state.config.track_selection))
+:lua print(vim.inspect(require("cursor-cli").state.config.track_selection))
 ```
 
 **Expected**: `false`
@@ -150,48 +150,48 @@ Even with selection tracking disabled, selections still work perfectly:
 
 ### What Changed
 
-1. **Error messages now use "CursorCode" branding** instead of "ClaudeCode"
+1. **Error messages now use "CursorCLI" branding** instead of "ClaudeCode"
 2. **Selection tracking disabled by default** (wasn't working anyway)
 3. **Commands still work the same** - you can still send files and selections to cursor
 
 ### No Action Required
 
 This fix is automatic. After updating the plugin:
-- `:CursorCodeAdd %` - Still works
-- `:CursorCodeSend` with visual selection - Still works  
+- `:CursorCLIAdd %` - Still works
+- `:CursorCLISend` with visual selection - Still works  
 - No more "[ClaudeCode] [selection] [ERROR]" messages
 
 ### If You Want to Enable Selection Tracking
 
-**Don't** - it won't work because cursorcode doesn't have a WebSocket server. The on-demand approach (using commands) is the correct way for cursorcode.
+**Don't** - it won't work because cursor-cli doesn't have a WebSocket server. The on-demand approach (using commands) is the correct way for cursor-cli.
 
 ## Technical Details
 
 ### Files Modified
 
-1. **lua/cursorcode/logger.lua** (5 changes)
+1. **lua/cursor-cli/logger.lua** (5 changes)
    - Line 3: Module description
    - Line 33: Default error message  
    - Line 47: Log prefix
    - Line 77: Error notification title
    - Line 79: Warning notification title
 
-2. **lua/cursorcode/config.lua** (1 change)
+2. **lua/cursor-cli/config.lua** (1 change)
    - Line 14: `track_selection = false` (was `true`)
 
-3. **lua/cursorcode/init.lua** (removed lines 209-215)
+3. **lua/cursor-cli/init.lua** (removed lines 209-215)
    - Deleted non-functional selection tracking setup code
 
 ### Why Selection Module Remains
 
-The `lua/cursorcode/selection.lua` file still exists but is not used. It could be removed in a future cleanup, but keeping it:
+The `lua/cursor-cli/selection.lua` file still exists but is not used. It could be removed in a future cleanup, but keeping it:
 - Maintains code similarity with claudecode for easier comparison
 - Allows future enhancements if needed
 - Doesn't cause problems since it's not initialized
 
 ## Related Fixes
 
-This is part of a series of fixes to make cursorcode work correctly:
+This is part of a series of fixes to make cursor-cli work correctly:
 
 1. ✅ Command registration timing (VimEnter autocmd)
 2. ✅ Config syntax error (missing parenthesis)

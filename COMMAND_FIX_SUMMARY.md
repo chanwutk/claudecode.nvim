@@ -23,38 +23,38 @@ Even after following setup instructions correctly.
 
 ### The Fix
 
-#### 1. Better Plugin Loader (`plugin/cursorcode.lua`)
+#### 1. Better Plugin Loader (`plugin/cursor-cli.lua`)
 
 **Changed from**:
 ```lua
 vim.defer_fn(function()
-  local ok, cursorcode = pcall(require, "cursorcode")
+  local ok, cursor-cli = pcall(require, "cursor-cli")
   if ok then
-    cursorcode.setup(config)
+    cursor-cli.setup(config)
   end
 end, 0)
 ```
 
 **To**:
 ```lua
-local function setup_cursorcode()
-  local ok, cursorcode = pcall(require, "cursorcode")
+local function setup_cursor-cli()
+  local ok, cursor-cli = pcall(require, "cursor-cli")
   if ok then
-    local setup_ok, setup_err = pcall(cursorcode.setup, config)
+    local setup_ok, setup_err = pcall(cursor-cli.setup, config)
     if not setup_ok then
-      vim.api.nvim_err_writeln("cursorcode.nvim: setup failed: " .. tostring(setup_err))
+      vim.api.nvim_err_writeln("cursor-cli.nvim: setup failed: " .. tostring(setup_err))
     end
   else
-    vim.api.nvim_err_writeln("cursorcode.nvim: failed to load module: " .. tostring(cursorcode))
+    vim.api.nvim_err_writeln("cursor-cli.nvim: failed to load module: " .. tostring(cursor-cli))
   end
 end
 
 -- Use VimEnter autocmd for reliable timing
 if vim.v.vim_did_enter == 1 then
-  setup_cursorcode()
+  setup_cursor-cli()
 else
   vim.api.nvim_create_autocmd("VimEnter", {
-    callback = setup_cursorcode,
+    callback = setup_cursor-cli,
     once = true,
   })
 end
@@ -66,12 +66,12 @@ end
 - ✅ Better error handling
 - ✅ Clear error messages
 
-#### 2. Lazy Config Loading (`lua/cursorcode/init.lua`)
+#### 2. Lazy Config Loading (`lua/cursor-cli/init.lua`)
 
 **Changed from**:
 ```lua
 M.state = {
-  config = require("cursorcode.config").defaults,
+  config = require("cursor-cli.config").defaults,
   initialized = false,
 }
 ```
@@ -105,11 +105,11 @@ Then **restart Neovim**.
 
 ```vim
 " Check plugin is loaded
-:lua print(vim.g.loaded_cursorcode)
+:lua print(vim.g.loaded_cursor-cli)
 " Should output: 1
 
 " Check version
-:lua print(require("cursorcode").version:string())
+:lua print(require("cursor-cli").version:string())
 " Should output: 1.0.0
 
 " Try the command
@@ -128,15 +128,15 @@ Then **restart Neovim**.
 
 2. **Manually trigger setup**:
    ```vim
-   :lua require("cursorcode").setup()
+   :lua require("cursor-cli").setup()
    ```
 
 3. **Verify configuration**:
-   Make sure your config includes `name = "cursorcode"`:
+   Make sure your config includes `name = "cursor-cli"`:
    ```lua
    {
      "chanwutk/cursor-cli.nvim",
-     name = "cursorcode",  -- ✅ Required!
+     name = "cursor-cli",  -- ✅ Required!
      dependencies = { "folke/snacks.nvim" },
    }
    ```
@@ -157,8 +157,8 @@ Then **restart Neovim**.
 ## Changes Made
 
 ### Files Modified
-1. `plugin/cursorcode.lua` - Improved plugin loader
-2. `lua/cursorcode/init.lua` - Lazy config loading
+1. `plugin/cursor-cli.lua` - Improved plugin loader
+2. `lua/cursor-cli/init.lua` - Lazy config loading
 
 ### Files Added
 1. `COMMAND_REGISTRATION_FIX.md` - Technical documentation

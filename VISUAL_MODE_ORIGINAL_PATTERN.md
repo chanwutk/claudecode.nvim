@@ -96,10 +96,10 @@ This happens in the **cursor terminal**, after focus has switched there.
 6. User manually enters insert mode in terminal
 ```
 
-### Our cursorcode.nvim
+### Our cursor-cli.nvim
 ```
 1. User selects text in visual mode
-2. Runs :CursorCodeSend
+2. Runs :CursorCLISend
 3. Selection sent as @mention text
 4. Visual mode exited in source buffer ✓ (matches original)
 5. Terminal focused (focus_after_send defaults to true)
@@ -115,7 +115,7 @@ function example() {  // Lines 10-20 selected in visual mode
   // code here
 }
 
-// After :CursorCodeSend:
+// After :CursorCLISend:
 // Visual mode EXITED ✓ - buffer is clean
 // No visual selection lingering
 // Buffer returned to normal mode
@@ -197,7 +197,7 @@ V
 9j          " Select 10 lines
 
 " 2. Send to cursor
-:CursorCodeSend
+:CursorCLISend
 
 " 3. What happens:
 " ✓ @myfile.lua:10-20 sent to cursor terminal

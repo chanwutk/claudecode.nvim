@@ -12,7 +12,7 @@ E492: Not an editor command: ClaudeCode
 
 This repository (`chanwutk/cursor-cli.nvim`) initially contained BOTH:
 1. **claudecode module** (`lua/claudecode/` + `plugin/claudecode.lua`)
-2. **cursorcode module** (`lua/cursorcode/` + `plugin/cursorcode.lua`)
+2. **cursor-cli module** (`lua/cursor-cli/` + `plugin/cursor-cli.lua`)
 
 When users installed BOTH plugins:
 - Official: `coder/claudecode.nvim` 
@@ -63,13 +63,13 @@ Deleted **36 files** from this repository:
 
 ### What Remains
 
-This repository now contains **ONLY** the cursorcode plugin:
+This repository now contains **ONLY** the cursor-cli plugin:
 
 #### Plugin Loader
-- `plugin/cursorcode.lua` ✅
+- `plugin/cursor-cli.lua` ✅
 
 #### CursorCode Module
-- `lua/cursorcode/` ✅
+- `lua/cursor-cli/` ✅
   - config.lua
   - cwd.lua
   - init.lua
@@ -84,7 +84,7 @@ This repository now contains **ONLY** the cursorcode plugin:
 ## Repository Purpose
 
 **This repository (`chanwutk/cursor-cli.nvim`) now provides ONLY:**
-- Module: `cursorcode`
+- Module: `cursor-cli`
 - Commands: `CursorCode*`
 - CLI: `agent` (cursor-cli command)
 - No Claude Code support
@@ -116,7 +116,7 @@ return {
   -- Cursor CLI plugin (this repo)
   {
     "chanwutk/cursor-cli.nvim",
-    name = "cursorcode",  -- Important: different module name
+    name = "cursor-cli",  -- Important: different module name
     dependencies = { "folke/snacks.nvim" },
     keys = {
       { "<leader>cc", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
@@ -142,11 +142,11 @@ Check that only cursor files exist in this repo:
 ```bash
 # Check plugin loaders
 ls plugin/
-# Output: cursorcode.lua (only)
+# Output: cursor-cli.lua (only)
 
 # Check lua modules
 ls lua/
-# Output: cursorcode (only)
+# Output: cursor-cli (only)
 
 # Verify no claudecode files
 find . -name "*claudecode*" -type f | grep -v ".git" | grep -v ".md"
@@ -160,7 +160,7 @@ find . -name "*claudecode*" -type f | grep -v ".git" | grep -v ".md"
 | Plugin | Repository | Module | Commands |
 |--------|-----------|---------|----------|
 | Claude Code | `coder/claudecode.nvim` | `claudecode` | `ClaudeCode*` |
-| Cursor CLI | `chanwutk/cursor-cli.nvim` | `cursorcode` | `CursorCode*` |
+| Cursor CLI | `chanwutk/cursor-cli.nvim` | `cursor-cli` | `CursorCode*` |
 
 ### File Structure Comparison
 
@@ -176,8 +176,8 @@ lua/claudecode/
 
 **chanwutk/cursor-cli.nvim (this repo):**
 ```
-plugin/cursorcode.lua
-lua/cursorcode/
+plugin/cursor-cli.lua
+lua/cursor-cli/
   ├── init.lua
   ├── terminal/ (terminal providers)
   └── ... (no server, no MCP tools)
@@ -233,7 +233,7 @@ Just install both plugins as shown in the installation guide above. No special s
 To prevent similar issues in the future:
 
 1. **Clear separation**: Each plugin repository should contain only its own files
-2. **Unique names**: Different module names (`claudecode` vs `cursorcode`)
+2. **Unique names**: Different module names (`claudecode` vs `cursor-cli`)
 3. **No overlaps**: No shared file paths between plugins
 4. **Documentation**: Clear indication of what each plugin provides
 

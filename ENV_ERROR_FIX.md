@@ -2,7 +2,7 @@
 
 ## Issue
 
-Users encountered this error when running `:CursorCode`:
+Users encountered this error when running `:CursorCLI`:
 
 ```
 Error executing Lua callback: ...ocal/share/nvim/lazy/snacks.nvim/lua/snacks/terminal.lua:161: 
@@ -19,7 +19,7 @@ The terminal providers (both snacks and native) were passing an empty environmen
 
 ### The Flow
 
-1. User runs `:CursorCode`
+1. User runs `:CursorCLI`
 2. `get_cursor_command_and_env()` creates `env_table = {}`
 3. Merges `defaults.env` (also `{}` by default) into `env_table`
 4. Passes empty `env_table` to terminal provider
@@ -50,7 +50,7 @@ Modified both terminal providers to only include `env` in the options when it ac
 
 ### Snacks Provider Fix
 
-**File**: `lua/cursorcode/terminal/snacks.lua`
+**File**: `lua/cursor-cli/terminal/snacks.lua`
 
 **Before**:
 ```lua
@@ -89,7 +89,7 @@ end
 
 ### Native Provider Fix
 
-**File**: `lua/cursorcode/terminal/native.lua`
+**File**: `lua/cursor-cli/terminal/native.lua`
 
 **Before**:
 ```lua
@@ -145,23 +145,23 @@ After the fix:
 
 ```vim
 " This should now work without errors
-:CursorCode
+:CursorCLI
 
 " Check if cursor terminal opens
 " Should see cursor CLI running
 
 " If you have custom env vars configured:
-:lua require("cursorcode").setup({ env = { MY_VAR = "test" } })
-:CursorCode
+:lua require("cursor-cli").setup({ env = { MY_VAR = "test" } })
+:CursorCLI
 " Should open with custom environment
 ```
 
 ## Files Changed
 
-1. **lua/cursorcode/terminal/snacks.lua**
+1. **lua/cursor-cli/terminal/snacks.lua**
    - Modified `build_opts()` to conditionally include env
 
-2. **lua/cursorcode/terminal/native.lua**
+2. **lua/cursor-cli/terminal/native.lua**
    - Modified termopen call to conditionally include env
 
 ## Impact
@@ -194,7 +194,7 @@ Simply update the plugin:
 Then restart Neovim and try:
 
 ```vim
-:CursorCode
+:CursorCLI
 ```
 
 Should work without errors! 🎉

@@ -1,17 +1,17 @@
 # Syntax Error Fix - config.lua
 
 ## Issue
-Users encountered a Lua syntax error when trying to load the cursorcode module:
+Users encountered a Lua syntax error when trying to load the cursor-cli module:
 
 ```
-cursorcode.nvim: failed to load module: vim/loader.lua:0: 
-...hare/nvim/lazy/cursor-cli.nvim/lua/cursorcode/config.lua:71: 
+cursor-cli.nvim: failed to load module: vim/loader.lua:0: 
+...hare/nvim/lazy/cursor-cli.nvim/lua/cursor-cli/config.lua:71: 
 ')' expected (to close '(' at line 67) near 'return'
 ```
 
 ## Root Cause
 
-In `lua/cursorcode/config.lua`, the `assert` statement in the `M.validate()` function was missing a closing parenthesis.
+In `lua/cursor-cli/config.lua`, the `assert` statement in the `M.validate()` function was missing a closing parenthesis.
 
 ### The Broken Code (lines 67-71)
 
@@ -52,20 +52,20 @@ To verify the fix works:
 
 ```vim
 " In Neovim, try to load the module
-:lua print(require("cursorcode").version:string())
+:lua print(require("cursor-cli").version:string())
 ```
 
 This should now work without syntax errors.
 
 ## Files Changed
 
-- `lua/cursorcode/config.lua` - Line 70: Added closing parenthesis
+- `lua/cursor-cli/config.lua` - Line 70: Added closing parenthesis
 
 ## Impact
 
 This was a critical bug that prevented the entire plugin from loading. With this fix:
-- The `cursorcode` module can now be loaded successfully
-- All `CursorCode*` commands will work
+- The `cursor-cli` module can now be loaded successfully
+- All `CursorCLI*` commands will work
 - The plugin can be used as intended
 
 ## How It Happened

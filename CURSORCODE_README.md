@@ -1,4 +1,4 @@
-# cursorcode.nvim
+# cursor-cli.nvim
 
 A Neovim plugin for Cursor CLI integration - works **alongside** [claudecode.nvim](https://github.com/coder/claudecode.nvim).
 
@@ -15,7 +15,7 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
 ## Key Features
 
 ✅ **Independent Plugin** - Separate from claudecode.nvim  
-✅ **Different Commands** - Uses `CursorCode*` (not `ClaudeCode*`)  
+✅ **Different Commands** - Uses `CursorCLI*` (not `ClaudeCode*`)  
 ✅ **Direct Text Input** - Types @mentions directly into cursor terminal  
 ✅ **No WebSocket** - Simpler architecture, just terminal integration  
 ✅ **File Explorer Integration** - Works with nvim-tree, oil.nvim, neo-tree, mini.files  
@@ -37,7 +37,7 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
   -- New Cursor Code plugin (this repo)
   {
     "chanwutk/cursor-cli.nvim",  -- Or your fork
-    name = "cursorcode",  -- Important: give it a different name
+    name = "cursor-cli",  -- Important: give it a different name
     dependencies = { "folke/snacks.nvim" },
     -- Note: config is optional - commands are auto-registered!
     -- You can omit config entirely for defaults:
@@ -45,21 +45,21 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
     
     -- Or customize with config:
     config = function()
-      require("cursorcode").setup({
+      require("cursor-cli").setup({
         -- your custom config here
       })
     end,
     
     keys = {
       { "<leader>c", nil, desc = "Cursor" },
-      { "<leader>cc", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-      { "<leader>co", "<cmd>CursorCodeOpen<cr>", desc = "Open Cursor" },
-      { "<leader>cC", "<cmd>CursorCodeClose<cr>", desc = "Close Cursor" },
-      { "<leader>cb", "<cmd>CursorCodeAdd %<cr>", desc = "Add current buffer" },
-      { "<leader>cs", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
+      { "<leader>cc", "<cmd>CursorCLI<cr>", desc = "Toggle Cursor" },
+      { "<leader>co", "<cmd>CursorCLIOpen<cr>", desc = "Open Cursor" },
+      { "<leader>cC", "<cmd>CursorCLIClose<cr>", desc = "Close Cursor" },
+      { "<leader>cb", "<cmd>CursorCLIAdd %<cr>", desc = "Add current buffer" },
+      { "<leader>cs", "<cmd>CursorCLISend<cr>", mode = "v", desc = "Send to Cursor" },
       {
         "<leader>ct",
-        "<cmd>CursorCodeTreeAdd<cr>",
+        "<cmd>CursorCLITreeAdd<cr>",
         desc = "Add from tree",
         ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
       },
@@ -74,17 +74,17 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
 -- Minimal install (uses all defaults)
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",
+  name = "cursor-cli",
   dependencies = { "folke/snacks.nvim" },
 }
 
 -- Custom config
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",
+  name = "cursor-cli",
   dependencies = { "folke/snacks.nvim" },
   config = function()
-    require("cursorcode").setup({
+    require("cursor-cli").setup({
       terminal_cmd = "cursor",
       log_level = "debug",
     })
@@ -97,10 +97,10 @@ This plugin provides seamless integration between Neovim and Cursor CLI, enablin
 ```lua
 use {
   'chanwutk/cursor-cli.nvim',
-  as = 'cursorcode',  -- Important: give it a different name
+  as = 'cursor-cli',  -- Important: give it a different name
   requires = { 'folke/snacks.nvim' },
   config = function()
-    require('cursorcode').setup({})
+    require('cursor-cli').setup({})
   end
 }
 ```
@@ -116,13 +116,13 @@ use {
 ### Minimal Setup
 
 ```lua
-require("cursorcode").setup({})
+require("cursor-cli").setup({})
 ```
 
 ### Custom Configuration
 
 ```lua
-require("cursorcode").setup({
+require("cursor-cli").setup({
   terminal_cmd = "cursor",  -- Command to run (default: "cursor")
   
   -- Terminal configuration
@@ -158,42 +158,42 @@ require("cursorcode").setup({
 
 | Command | Description |
 |---------|-------------|
-| `:CursorCode` | Toggle cursor terminal (smart focus) |
-| `:CursorCodeOpen` | Open cursor terminal |
-| `:CursorCodeClose` | Close cursor terminal |
-| `:CursorCodeFocus` | Focus or toggle cursor terminal |
-| `:CursorCodeAdd <file> [start] [end]` | Add file to cursor (types `@file` or `@file:start-end`) |
-| `:CursorCodeSend` | Send visual selection to cursor |
-| `:CursorCodeTreeAdd` | Add selected file from tree explorer |
+| `:CursorCLI` | Toggle cursor terminal (smart focus) |
+| `:CursorCLIOpen` | Open cursor terminal |
+| `:CursorCLIClose` | Close cursor terminal |
+| `:CursorCLIFocus` | Focus or toggle cursor terminal |
+| `:CursorCLIAdd <file> [start] [end]` | Add file to cursor (types `@file` or `@file:start-end`) |
+| `:CursorCLISend` | Send visual selection to cursor |
+| `:CursorCLITreeAdd` | Add selected file from tree explorer |
 
 ## Usage Examples
 
 ### Add Current File
 ```vim
-:CursorCodeAdd %
+:CursorCLIAdd %
 ```
 Types `@currentfile.ts ` into cursor terminal.
 
 ### Add File with Line Range
 ```vim
-:CursorCodeAdd src/main.ts 10 50
+:CursorCLIAdd src/main.ts 10 50
 ```
 Types `@src/main.ts:10-50 ` into cursor terminal.
 
 ### Send Visual Selection
 1. Select text in visual mode (V, v, or Ctrl-V)
-2. Press `<leader>cs` or run `:CursorCodeSend`
+2. Press `<leader>cs` or run `:CursorCLISend`
 3. Plugin types `@filename:start-end ` into cursor
 
 ### Add from File Explorer
 In NvimTree, oil.nvim, neo-tree, or mini.files:
 1. Navigate to a file
-2. Press `<leader>ct` or run `:CursorCodeTreeAdd`
+2. Press `<leader>ct` or run `:CursorCLITreeAdd`
 3. File reference sent to cursor
 
 ## How It Works
 
-Unlike `claudecode.nvim` which uses a WebSocket server for MCP protocol, `cursorcode.nvim` uses a simpler approach:
+Unlike `claudecode.nvim` which uses a WebSocket server for MCP protocol, `cursor-cli.nvim` uses a simpler approach:
 
 1. Opens a cursor CLI terminal in Neovim
 2. When you reference a file/selection, it types the @mention directly into the terminal
@@ -201,7 +201,7 @@ Unlike `claudecode.nvim` which uses a WebSocket server for MCP protocol, `cursor
 
 **Example Flow**:
 ```
-:CursorCodeAdd myfile.ts 10 20
+:CursorCLIAdd myfile.ts 10 20
   ↓
 Opens cursor terminal (if needed)
   ↓
@@ -212,11 +212,11 @@ Cursor processes the file reference
 
 ## Differences from claudecode.nvim
 
-### cursorcode.nvim (this plugin)
+### cursor-cli.nvim (this plugin)
 - ✅ Works with Cursor CLI
 - ✅ Direct text input approach
 - ✅ No WebSocket server
-- ✅ Uses `:CursorCode*` commands
+- ✅ Uses `:CursorCLI*` commands
 - ✅ Simpler architecture
 - ✅ Can coexist with claudecode.nvim
 
@@ -237,29 +237,29 @@ Error: agent: command not found
 ```
 **Solution**: Install cursor-cli or configure the path:
 ```lua
-require("cursorcode").setup({
+require("cursor-cli").setup({
   terminal_cmd = "/path/to/agent",
 })
 ```
 
 ### Terminal not opening
-If `:CursorCode` doesn't open a terminal:
+If `:CursorCLI` doesn't open a terminal:
 1. Check that cursor is in your PATH: `which cursor`
-2. Try opening manually: `:CursorCodeOpen`
+2. Try opening manually: `:CursorCLIOpen`
 3. Check logs: Set `log_level = "debug"` in config
 
 ### @mentions not appearing
 If text isn't being typed into the terminal:
-1. Verify terminal is active: `:CursorCode`
-2. Try adding a file: `:CursorCodeAdd %`
+1. Verify terminal is active: `:CursorCLI`
+2. Try adding a file: `:CursorCLIAdd %`
 3. Check the cursor terminal for the text
 4. Enable debug logging to see what's happening
 
 ### Conflicts with claudecode.nvim
 Both plugins can coexist, but if you experience issues:
 1. Ensure you use different key mappings
-2. Use `name = "cursorcode"` in lazy.nvim config
-3. Check that commands don't overlap (CursorCode* vs ClaudeCode*)
+2. Use `name = "cursor-cli"` in lazy.nvim config
+3. Check that commands don't overlap (CursorCLI* vs ClaudeCode*)
 
 ## Terminal Providers
 

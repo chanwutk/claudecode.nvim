@@ -1,8 +1,8 @@
-# CursorCodeClose Error Fix
+# CursorCLIClose Error Fix
 
 ## The Issue
 
-When running `:CursorCodeClose`, the cursor-cli terminal closed correctly but displayed an error message:
+When running `:CursorCLIClose`, the cursor-cli terminal closed correctly but displayed an error message:
 
 ```
 Check for any errors.
@@ -17,7 +17,7 @@ The close operations in all three terminal providers had **unprotected API calls
 
 ### 1. Native Terminal Provider
 ```lua
--- lua/cursorcode/terminal/native.lua (line 166)
+-- lua/cursor-cli/terminal/native.lua (line 166)
 vim.api.nvim_win_close(winid, true)
 ```
 **Problem**: `nvim_win_close` can fail if:
@@ -27,14 +27,14 @@ vim.api.nvim_win_close(winid, true)
 
 ### 2. Snacks Terminal Provider
 ```lua
--- lua/cursorcode/terminal/snacks.lua (line 175)
+-- lua/cursor-cli/terminal/snacks.lua (line 175)
 terminal:close()
 ```
 **Problem**: Snacks.nvim's `close()` method can encounter errors during cleanup.
 
 ### 3. External Terminal Provider
 ```lua
--- lua/cursorcode/terminal/external.lua (line 145)
+-- lua/cursor-cli/terminal/external.lua (line 145)
 vim.fn.jobstop(jobid)
 ```
 **Problem**: `jobstop` can fail if:
@@ -49,7 +49,7 @@ Added **`pcall` (protected call)** to all terminal close operations. This catche
 
 ### Changes Made
 
-#### 1. Native Terminal (`lua/cursorcode/terminal/native.lua`)
+#### 1. Native Terminal (`lua/cursor-cli/terminal/native.lua`)
 
 **Before**:
 ```lua
@@ -72,7 +72,7 @@ local function close_terminal()
 end
 ```
 
-#### 2. Snacks Terminal (`lua/cursorcode/terminal/snacks.lua`)
+#### 2. Snacks Terminal (`lua/cursor-cli/terminal/snacks.lua`)
 
 **Before**:
 ```lua
@@ -101,7 +101,7 @@ function M.close()
 end
 ```
 
-#### 3. External Terminal (`lua/cursorcode/terminal/external.lua`)
+#### 3. External Terminal (`lua/cursor-cli/terminal/external.lua`)
 
 **Before**:
 ```lua
@@ -154,7 +154,7 @@ This is appropriate because:
 
 ### Before
 ```vim
-:CursorCodeClose
+:CursorCLIClose
 " Terminal closes ✓
 " But shows error ✗
 
@@ -164,7 +164,7 @@ Press ENTER or type command to continue
 
 ### After
 ```vim
-:CursorCodeClose
+:CursorCLIClose
 " Terminal closes ✓
 " No error shown ✓
 " Clean, silent operation ✓
@@ -193,10 +193,10 @@ Press ENTER or type command to continue
 ### Manual Test
 ```vim
 " 1. Open cursor terminal
-:CursorCode
+:CursorCLI
 
 " 2. Close it
-:CursorCodeClose
+:CursorCLIClose
 
 " 3. Verify:
 " - Terminal window closes ✓
@@ -207,29 +207,29 @@ Press ENTER or type command to continue
 ### Edge Cases
 ```vim
 " Test 1: Close when already closed
-:CursorCodeClose  " First time
-:CursorCodeClose  " Second time - should be silent (no error)
+:CursorCLIClose  " First time
+:CursorCLIClose  " Second time - should be silent (no error)
 
 " Test 2: Close then reopen
-:CursorCode
-:CursorCodeClose
-:CursorCode       " Should work fine
+:CursorCLI
+:CursorCLIClose
+:CursorCLI       " Should work fine
 
 " Test 3: Multiple rapid closes
-:CursorCodeClose
-:CursorCodeClose
-:CursorCodeClose  " All should be silent
+:CursorCLIClose
+:CursorCLIClose
+:CursorCLIClose  " All should be silent
 ```
 
 ## Files Changed
 
-1. `lua/cursorcode/terminal/native.lua` - Added pcall for window close
-2. `lua/cursorcode/terminal/snacks.lua` - Added pcall for terminal close  
-3. `lua/cursorcode/terminal/external.lua` - Added pcall for job stop
+1. `lua/cursor-cli/terminal/native.lua` - Added pcall for window close
+2. `lua/cursor-cli/terminal/snacks.lua` - Added pcall for terminal close  
+3. `lua/cursor-cli/terminal/external.lua` - Added pcall for job stop
 
 ## Summary
 
-This fix ensures that `:CursorCodeClose` provides a clean, professional user experience:
+This fix ensures that `:CursorCLIClose` provides a clean, professional user experience:
 - Terminal closes correctly
 - No error messages
 - Silent, graceful handling of edge cases

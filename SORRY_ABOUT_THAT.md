@@ -16,17 +16,17 @@ In commit `3e83503`, I've now applied the actual code changes:
 
 ### Changes Made
 
-1. **lua/cursorcode/config.lua**
+1. **lua/cursor-cli/config.lua**
    - Changed `track_selection = true` → `track_selection = false`
    - Added explanation comment
 
-2. **lua/cursorcode/logger.lua**
-   - Changed all "ClaudeCode" → "CursorCode" (6 places)
+2. **lua/cursor-cli/logger.lua**
+   - Changed all "ClaudeCode" → "CursorCLI" (6 places)
    - Fixed module documentation
    - Fixed log prefix
    - Fixed notification titles
 
-3. **lua/cursorcode/init.lua**
+3. **lua/cursor-cli/init.lua**
    - Removed broken selection tracking setup code
    - Added comment explaining why it's not needed
 
@@ -41,26 +41,26 @@ In commit `3e83503`, I've now applied the actual code changes:
 
 3. **Test the commands**:
    ```vim
-   :CursorCode           " Opens cursor terminal
-   :CursorCodeSend       " Sends selection (should work now!)
-   :CursorCodeAdd %      " Adds current file
+   :CursorCLI           " Opens cursor terminal
+   :CursorCLISend       " Sends selection (should work now!)
+   :CursorCLIAdd %      " Adds current file
    ```
 
 ## Expected Behavior
 
 **Before** (broken):
 ```
-:CursorCodeSend
+:CursorCLISend
 [ClaudeCode] [selection] [ERROR] Selection tracking is not enabled.
 ```
 
 **After** (fixed):
 ```
-:CursorCodeSend
+:CursorCLISend
 <sends your selection to the cursor terminal - no error>
 ```
 
-All log messages will now show `[CursorCode]` instead of `[ClaudeCode]`.
+All log messages will now show `[CursorCLI]` instead of `[ClaudeCode]`.
 
 ## My Apologies
 
@@ -77,17 +77,17 @@ You can verify the fix was applied by checking:
 
 ```vim
 " 1. Check config default
-:lua print(require("cursorcode.config").defaults.track_selection)
+:lua print(require("cursor-cli.config").defaults.track_selection)
 " Should print: false
 
-" 2. Try CursorCodeSend in visual mode
+" 2. Try CursorCLISend in visual mode
 " Select some text, then:
-:CursorCodeSend
+:CursorCLISend
 " Should send to cursor without error
 
 " 3. Check logger branding
-:lua require("cursorcode.logger").info("test", "This is a test message")
-" Should show: [CursorCode] [test] This is a test message
+:lua require("cursor-cli.logger").info("test", "This is a test message")
+" Should show: [CursorCLI] [test] This is a test message
 ```
 
 The plugin should now work completely!

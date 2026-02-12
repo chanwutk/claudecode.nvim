@@ -2,7 +2,7 @@
 
 ## Overview
 
-When using `CursorCodeSend` from visual mode, the plugin now automatically:
+When using `CursorCLISend` from visual mode, the plugin now automatically:
 1. Exits visual mode
 2. Enters insert mode
 3. Allows immediate typing in the cursor terminal
@@ -17,7 +17,7 @@ This creates a seamless workflow: **select → send → type**.
 " Select lines 10-20 with line-wise visual mode
 V
 9j
-:CursorCodeSend
+:CursorCLISend
 
 " What happened:
 " ✓ @myfile.lua:10-20 sent to cursor terminal
@@ -36,7 +36,7 @@ Users found themselves stuck in visual mode after the focus moved to the termina
 " Select lines 10-20 with line-wise visual mode
 V
 9j
-:CursorCodeSend
+:CursorCLISend
 
 " What happens now:
 " ✓ @myfile.lua:10-20 sent to cursor terminal
@@ -77,7 +77,7 @@ After `terminal.open()` is called (when `focus_after_send = true`), the plugin:
 " Select a function you want to ask about
 V
 5j
-:CursorCodeSend
+:CursorCLISend
 " Immediately type: "what does this function do?"
 ```
 
@@ -87,7 +87,7 @@ V
 Ctrl-V
 10j
 5l
-:CursorCodeSend
+:CursorCLISend
 " Immediately type: "why isn't this working?"
 ```
 
@@ -96,7 +96,7 @@ Ctrl-V
 " Select complex algorithm
 v
 /end_of_algorithm<CR>
-:CursorCodeSend
+:CursorCLISend
 " Immediately type: "explain this algorithm step by step"
 ```
 
@@ -110,7 +110,7 @@ This feature:
 
 To disable the auto-focus (and thus this feature):
 ```lua
-require("cursorcode").setup({
+require("cursor-cli").setup({
   focus_after_send = false,
 })
 ```
@@ -118,7 +118,7 @@ require("cursorcode").setup({
 ## Technical Details
 
 ### Code Location
-The feature is implemented in `lua/cursorcode/init.lua` in the `send_at_mention()` function, at two locations:
+The feature is implemented in `lua/cursor-cli/init.lua` in the `send_at_mention()` function, at two locations:
 
 1. When terminal already exists (after line 147)
 2. When terminal needs to be created (after line 164)
@@ -148,7 +148,7 @@ Uses `vim.schedule()` to ensure the mode change happens after:
 This feature completes the natural workflow for sending code selections to Cursor:
 
 1. **Select** code in visual mode (v, V, or Ctrl-V)
-2. **Send** with `:CursorCodeSend`
+2. **Send** with `:CursorCLISend`
 3. **Type** your question immediately - no manual mode switching!
 
 Combined with `focus_after_send = true`, this creates a completely smooth, integrated experience that feels natural and efficient.

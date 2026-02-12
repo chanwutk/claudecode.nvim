@@ -1,4 +1,4 @@
-# Implementation Summary: cursorcode.nvim
+# Implementation Summary: cursor-cli.nvim
 
 ## Mission Accomplished ✅
 
@@ -6,10 +6,10 @@ Successfully created a **standalone cursor-cli plugin** that works **alongside**
 
 ## What Was Built
 
-### Standalone Plugin: cursorcode.nvim
+### Standalone Plugin: cursor-cli.nvim
 
 A complete, independent Neovim plugin for Cursor CLI integration that:
-- Uses a separate module namespace (`cursorcode`)
+- Uses a separate module namespace (`cursor-cli`)
 - Has different command names (`CursorCode*`)
 - Can be installed alongside `claudecode.nvim` without conflicts
 - Provides cursor-specific functionality only
@@ -17,7 +17,7 @@ A complete, independent Neovim plugin for Cursor CLI integration that:
 ### Key Architecture Decisions
 
 1. **Separate Module Namespace**
-   - `claudecode.*` → `cursorcode.*`
+   - `claudecode.*` → `cursor-cli.*`
    - No shared state or dependencies
    - Independent plugin loader
 
@@ -42,7 +42,7 @@ Repository Structure:
 │   │   ├── tools/          # MCP tools
 │   │   └── ...
 │   │
-│   └── cursorcode/          # NEW: Standalone plugin (Cursor CLI)
+│   └── cursor-cli/          # NEW: Standalone plugin (Cursor CLI)
 │       ├── init.lua         # Simplified, no server
 │       ├── config.lua       # Cursor-specific config
 │       ├── terminal.lua     # Terminal + send_keys()
@@ -53,11 +53,11 @@ Repository Structure:
 │
 ├── plugin/
 │   ├── claudecode.lua       # Original loader
-│   └── cursorcode.lua       # NEW: Independent loader
+│   └── cursor-cli.lua       # NEW: Independent loader
 │
 └── Documentation:
     ├── README.md            # Original, updated with cursor notice
-    ├── CURSORCODE_README.md # Complete cursorcode.nvim guide
+    ├── CURSORCODE_README.md # Complete cursor-cli.nvim guide
     ├── QUICKSTART.md        # How to use both together
     └── ...
 ```
@@ -78,10 +78,10 @@ Repository Structure:
   -- Plugin 2: Cursor Code (This Repo)
   {
     "chanwutk/cursor-cli.nvim",
-    name = "cursorcode",  -- Different identifier
+    name = "cursor-cli",  -- Different identifier
     dependencies = { "folke/snacks.nvim" },
     config = function()
-      require("cursorcode").setup({})
+      require("cursor-cli").setup({})
     end,
   },
 }
@@ -113,10 +113,10 @@ Repository Structure:
 
 ### Direct Text Input Approach
 
-Instead of WebSocket/MCP protocol, cursorcode uses direct terminal text input:
+Instead of WebSocket/MCP protocol, cursor-cli uses direct terminal text input:
 
 ```lua
--- In lua/cursorcode/init.lua
+-- In lua/cursor-cli/init.lua
 function M._send_at_mention(file_path, start_line, end_line)
   -- Format: @filename or @filename:10-20
   local mention_text = string.format("@%s", formatted_path)
@@ -127,7 +127,7 @@ function M._send_at_mention(file_path, start_line, end_line)
   end
   
   -- Type directly into cursor terminal
-  local terminal = require("cursorcode.terminal")
+  local terminal = require("cursor-cli.terminal")
   terminal.send_keys(mention_text .. " ")
 end
 ```
@@ -135,7 +135,7 @@ end
 ### Terminal Send Keys Implementation
 
 ```lua
--- In lua/cursorcode/terminal.lua
+-- In lua/cursor-cli/terminal.lua
 function M.send_keys(text)
   local provider = get_provider()
   local bufnr = provider.get_active_bufnr()
@@ -228,7 +228,7 @@ With actual cursor CLI:
 - Would replace claudecode.nvim
 
 ### After (Standalone Plugin)
-- Created separate cursorcode.nvim
+- Created separate cursor-cli.nvim
 - Independent module and commands
 - No WebSocket server
 - Works alongside claudecode.nvim
@@ -259,7 +259,7 @@ Potential improvements:
 
 ## Conclusion
 
-We successfully created **cursorcode.nvim** - a standalone plugin that:
+We successfully created **cursor-cli.nvim** - a standalone plugin that:
 - Integrates Cursor CLI with Neovim
 - Works alongside claudecode.nvim without conflicts
 - Uses simple direct text input instead of WebSocket

@@ -22,15 +22,15 @@ This plugin started as a fork of claudecode.nvim and has been adapted to:
 **Issue**: Missing closing parenthesis in config.lua  
 **Error**: `')' expected (to close '(' at line 67) near 'return'`  
 **Fix**: Added missing `)` on line 70 after assert statement  
-**File**: `lua/cursorcode/config.lua`  
+**File**: `lua/cursor-cli/config.lua`  
 **Commit**: `2c67390`  
 
 ### Fix #3: Command Registration Failure
-**Issue**: `:CursorCode` command not available after installation  
-**Error**: `E492: Not an editor command: CursorCode`  
+**Issue**: `:CursorCLI` command not available after installation  
+**Error**: `E492: Not an editor command: CursorCLI`  
 **Root Cause**: `vim.defer_fn` timing issues  
 **Fix**: Changed to VimEnter autocmd for reliable setup  
-**Files**: `plugin/cursorcode.lua`, `lua/cursorcode/init.lua`  
+**Files**: `plugin/cursor-cli.lua`, `lua/cursor-cli/init.lua`  
 **Commit**: `e184d94`  
 
 ### Fix #4: Invalid env Argument
@@ -38,7 +38,7 @@ This plugin started as a fork of claudecode.nvim and has been adapted to:
 **Error**: `Vim:E475: Invalid argument: env`  
 **Root Cause**: Passing empty `{}` table for env instead of `nil`  
 **Fix**: Only include env in opts when it has values  
-**Files**: `lua/cursorcode/terminal/snacks.lua`, `lua/cursorcode/terminal/native.lua`  
+**Files**: `lua/cursor-cli/terminal/snacks.lua`, `lua/cursor-cli/terminal/native.lua`  
 **Commit**: `6e831d1`  
 
 ### Fix #5: Wrong CLI Command Name
@@ -46,7 +46,7 @@ This plugin started as a fork of claudecode.nvim and has been adapted to:
 **Error**: `/bin/bash: line 1: cursor: command not found`  
 **Root Cause**: Default command was `"cursor"` but actual command is `"agent"`  
 **Fix**: Changed default from `"cursor"` to `"agent"`  
-**Files**: `lua/cursorcode/terminal.lua`, `lua/cursorcode/config.lua`  
+**Files**: `lua/cursor-cli/terminal.lua`, `lua/cursor-cli/config.lua`  
 **Commit**: `d5720c8`  
 
 ### Fix #6: Plugin Conflict with claudecode.nvim
@@ -61,20 +61,20 @@ This plugin started as a fork of claudecode.nvim and has been adapted to:
 **Issue**: Selection commands showed error and wrong plugin name  
 **Error**: `[ClaudeCode] [selection] [ERROR] Selection tracking is not enabled.`  
 **Root Causes**:
-1. Logger used "ClaudeCode" instead of "CursorCode"
-2. Selection tracking enabled but not compatible with cursorcode
+1. Logger used "ClaudeCode" instead of "CursorCLI"
+2. Selection tracking enabled but not compatible with cursor-cli
 **Fix**: 
-- Changed logger branding to "CursorCode"
+- Changed logger branding to "CursorCLI"
 - Disabled selection tracking by default (not needed)
-**Files**: `lua/cursorcode/logger.lua`, `lua/cursorcode/config.lua`, `lua/cursorcode/init.lua`  
+**Files**: `lua/cursor-cli/logger.lua`, `lua/cursor-cli/config.lua`, `lua/cursor-cli/init.lua`  
 **Commit**: `3e83503`  
 
 ### Fix #8: Missing Logger Import
 **Issue**: Logger function calls failed  
 **Error**: `attempt to index global 'logger' (a nil value)`  
 **Root Cause**: terminal.lua used logger 14 times but never imported it  
-**Fix**: Added `local logger = require("cursorcode.logger")`  
-**File**: `lua/cursorcode/terminal.lua`  
+**Fix**: Added `local logger = require("cursor-cli.logger")`  
+**File**: `lua/cursor-cli/terminal.lua`  
 **Commit**: `f16df23`  
 
 ### Fix #9: Wrong Function Name
@@ -82,23 +82,23 @@ This plugin started as a fork of claudecode.nvim and has been adapted to:
 **Error**: `attempt to call global 'get_claude_command_and_env' (a nil value)`  
 **Root Cause**: Function defined as `get_cursor_command_and_env` but called as `get_claude_command_and_env`  
 **Fix**: Changed function call to use correct name  
-**File**: `lua/cursorcode/terminal.lua` line 494  
+**File**: `lua/cursor-cli/terminal.lua` line 494  
 **Commit**: `1422041`  
 
 ### Fix #10: Selection Module Claudecode References
 **Issue**: Selection sending failed  
-**Error**: `[CursorCode] [selection] [ERROR] Selection tracking is not enabled.`  
+**Error**: `[CursorCLI] [selection] [ERROR] Selection tracking is not enabled.`  
 **Root Causes**:
-1. Checked `tracking_enabled` (not needed for cursorcode)
+1. Checked `tracking_enabled` (not needed for cursor-cli)
 2. Required `"claudecode"` module (doesn't exist)
-3. Checked for server (cursorcode has no server)
+3. Checked for server (cursor-cli has no server)
 4. Called `claudecode_main.send_at_mention()`
 **Fix**: Rewrote function to:
 - Remove tracking_enabled check
-- Use `require("cursorcode")` instead
+- Use `require("cursor-cli")` instead
 - Remove server dependency
-- Call `cursorcode_main.send_at_mention()`
-**File**: `lua/cursorcode/selection.lua` lines 630-698  
+- Call `cursor-cli_main.send_at_mention()`
+**File**: `lua/cursor-cli/selection.lua` lines 630-698  
 **Commit**: `1422041`  
 
 ## Current Status
@@ -107,21 +107,21 @@ This plugin started as a fork of claudecode.nvim and has been adapted to:
 
 ### Working Features
 - ✅ Plugin auto-setup on VimEnter
-- ✅ All CursorCode* commands registered
+- ✅ All CursorCLI* commands registered
 - ✅ Terminal opens with `agent` command
-- ✅ File sending works (`:CursorCodeAdd`)
-- ✅ Selection sending works (`:CursorCodeSend`)
+- ✅ File sending works (`:CursorCLIAdd`)
+- ✅ Selection sending works (`:CursorCLISend`)
 - ✅ No conflicts with claudecode.nvim
-- ✅ Correct branding (CursorCode, not ClaudeCode)
+- ✅ Correct branding (CursorCLI, not ClaudeCode)
 - ✅ All debug messages work
 
 ### Commands Available
-- `:CursorCode` - Toggle cursor terminal
-- `:CursorCodeOpen` - Open cursor terminal
-- `:CursorCodeClose` - Close cursor terminal
-- `:CursorCodeAdd <file>` - Add file to cursor
-- `:CursorCodeSend` - Send selection to cursor
-- `:CursorCodeTreeAdd` - Add from file tree
+- `:CursorCLI` - Toggle cursor terminal
+- `:CursorCLIOpen` - Open cursor terminal
+- `:CursorCLIClose` - Close cursor terminal
+- `:CursorCLIAdd <file>` - Add file to cursor
+- `:CursorCLISend` - Send selection to cursor
+- `:CursorCLITreeAdd` - Add from file tree
 
 ### Installation
 
@@ -136,7 +136,7 @@ return {
   -- This plugin (Cursor CLI)
   {
     "chanwutk/cursor-cli.nvim",
-    name = "cursorcode",  -- REQUIRED: Different module name
+    name = "cursor-cli",  -- REQUIRED: Different module name
     dependencies = { "folke/snacks.nvim" },
     -- No config needed - auto-setup on VimEnter
   },

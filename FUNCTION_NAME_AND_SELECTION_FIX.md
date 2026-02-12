@@ -8,14 +8,14 @@ This document explains two critical bugs that were fixed in the cursor-cli.nvim 
 
 **Error Message**:
 ```
-Error executing Lua callback: ...lua/cursorcode/terminal.lua:494: 
+Error executing Lua callback: ...lua/cursor-cli/terminal.lua:494: 
 attempt to call global 'get_claude_command_and_env' (a nil value)
 stack traceback:
   terminal.lua:494: in function 'open'
   init.lua:240: in function <init.lua:237>
 ```
 
-**Command that failed**: `:CursorCodeOpen`
+**Command that failed**: `:CursorCLIOpen`
 
 #### Root Cause
 
@@ -44,19 +44,19 @@ Also updated:
 
 **Error Message**:
 ```
-[CursorCode] [selection] [ERROR] Selection tracking is not enabled.
+[CursorCLI] [selection] [ERROR] Selection tracking is not enabled.
 ```
 
-**Command that failed**: `:CursorCodeSend`
+**Command that failed**: `:CursorCLISend`
 
 #### Root Causes
 
-The `selection.lua` module was copied from claudecode but never adapted for cursorcode's architecture:
+The `selection.lua` module was copied from claudecode but never adapted for cursor-cli's architecture:
 
-1. **Checked `tracking_enabled`**: Required selection tracking to be enabled, but cursorcode doesn't use tracking
+1. **Checked `tracking_enabled`**: Required selection tracking to be enabled, but cursor-cli doesn't use tracking
 2. **Required claudecode module**: Tried to `require("claudecode")` which doesn't exist in cursor-cli.nvim
-3. **Checked for server**: Expected `claudecode_main.state.server` but cursorcode doesn't have a WebSocket server
-4. **Wrong function call**: Called `claudecode_main.send_at_mention()` instead of `cursorcode_main.send_at_mention()`
+3. **Checked for server**: Expected `claudecode_main.state.server` but cursor-cli doesn't have a WebSocket server
+4. **Wrong function call**: Called `claudecode_main.send_at_mention()` instead of `cursor-cli_main.send_at_mention()`
 
 #### The Fix
 
@@ -84,22 +84,22 @@ function M.send_at_mention_for_visual_selection(line1, line2)
 **After**:
 ```lua
 function M.send_at_mention_for_visual_selection(line1, line2)
-  -- Note: For cursorcode, we don't need tracking_enabled to send selections
+  -- Note: For cursor-cli, we don't need tracking_enabled to send selections
   -- We can send selections on-demand via direct text input
 
   -- ... get selection logic (reordered to try current visual first)
   
-  -- Use cursorcode main module to send the at-mention
-  local cursorcode_main = require("cursorcode")
-  local success, error_msg = cursorcode_main.send_at_mention(...)
+  -- Use cursor-cli main module to send the at-mention
+  local cursor-cli_main = require("cursor-cli")
+  local success, error_msg = cursor-cli_main.send_at_mention(...)
 ```
 
 **Key Changes**:
 1. ✅ Removed `tracking_enabled` check
 2. ✅ Removed server check
-3. ✅ Changed `require("claudecode")` to `require("cursorcode")`
+3. ✅ Changed `require("claudecode")` to `require("cursor-cli")`
 4. ✅ Reordered logic to try current visual selection first
-5. ✅ Uses `cursorcode_main.send_at_mention()` instead of `claudecode_main.send_at_mention()`
+5. ✅ Uses `cursor-cli_main.send_at_mention()` instead of `claudecode_main.send_at_mention()`
 
 ## Why These Changes Work
 
@@ -111,7 +111,7 @@ function M.send_at_mention_for_visual_selection(line1, line2)
 - Requires selection tracking for real-time updates
 - Server must be running for commands to work
 
-**cursorcode.nvim** (cursor-cli.nvim):
+**cursor-cli.nvim** (cursor-cli.nvim):
 - No WebSocket server
 - Types text directly into terminal
 - Selection captured on-demand when command is run
@@ -123,11 +123,11 @@ Both commands now work correctly:
 
 ```vim
 " Open cursor terminal
-:CursorCodeOpen
+:CursorCLIOpen
 ✅ Opens terminal with "agent" command
 
 " Send current selection
-:CursorCodeSend
+:CursorCLISend
 ✅ Gets current visual selection
 ✅ Types @filename:lines into cursor terminal
 ✅ No errors!
@@ -135,14 +135,14 @@ Both commands now work correctly:
 
 ## Files Changed
 
-1. **lua/cursorcode/terminal.lua**
+1. **lua/cursor-cli/terminal.lua**
    - Line 491: Comment updated
    - Line 494: Function name and variable name fixed
 
-2. **lua/cursorcode/selection.lua**
+2. **lua/cursor-cli/selection.lua**
    - Lines 630-698: Complete rewrite of `send_at_mention_for_visual_selection()`
    - Removed claudecode dependencies
-   - Adapted for cursorcode architecture
+   - Adapted for cursor-cli architecture
 
 ## Verification
 
@@ -152,18 +152,18 @@ After updating:
 " Restart Neovim
 
 " Test opening terminal
-:CursorCodeOpen
+:CursorCLIOpen
 " Should open without errors
 
 " Test sending selection (in visual mode)
 V
-:CursorCodeSend
+:CursorCLISend
 " Should send selection without errors
 ```
 
 ## Prevention
 
-When adapting code from claudecode to cursorcode:
+When adapting code from claudecode to cursor-cli:
 - [ ] Check all function names match
 - [ ] Replace all "claude" references with "cursor"
 - [ ] Remove server/tracking dependencies

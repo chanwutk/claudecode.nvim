@@ -21,7 +21,7 @@ end)
 
 **User experience**:
 - Select lines in visual mode
-- Run `:CursorCodeSend`
+- Run `:CursorCLISend`
 - Focus moves to cursor terminal ✓
 - **Still stuck in visual mode** ✗
 - Can't type immediately ✗
@@ -117,7 +117,7 @@ V
 9j
 
 " 2. Send to cursor
-:CursorCodeSend
+:CursorCLISend
 
 " 3. What happens:
 " ✓ @filename:10-20 sent to cursor terminal
@@ -138,7 +138,7 @@ What does this code do?<Enter>
 1. Open a file in Neovim
 2. Enter visual mode: `V`
 3. Select multiple lines: `9j` (select 10 lines)
-4. Run command: `:CursorCodeSend`
+4. Run command: `:CursorCLISend`
 5. Verify:
    - Focus moved to cursor terminal ✓
    - Visual mode is NOT active ✓
@@ -146,7 +146,7 @@ What does this code do?<Enter>
    - Can type immediately ✓
 
 ### Expected Behavior
-After running `:CursorCodeSend` from visual mode:
+After running `:CursorCLISend` from visual mode:
 - Cursor is in the cursor terminal buffer
 - Mode line shows `-- INSERT --`
 - Can type text immediately
@@ -186,7 +186,7 @@ This is a general Neovim plugin development best practice!
 
 ## Files Changed
 
-- `lua/cursorcode/init.lua` (2 locations)
+- `lua/cursor-cli/init.lua` (2 locations)
   - Lines 146-154: When terminal already exists
   - Lines 167-172: When terminal is created
 

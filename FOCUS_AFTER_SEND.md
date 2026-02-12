@@ -2,24 +2,24 @@
 
 ## Overview
 
-By default, when you use `:CursorCodeSend` or `:CursorCodeAdd`, the plugin now automatically moves your cursor to the cursor-cli terminal window. This provides a more natural workflow.
+By default, when you use `:CursorCLISend` or `:CursorCLIAdd`, the plugin now automatically moves your cursor to the cursor-cli terminal window. This provides a more natural workflow.
 
 ## User Experience
 
 ### New Default Behavior
 
 1. You're editing a file: `myproject/utils.lua`
-2. You run: `:CursorCodeAdd %`
+2. You run: `:CursorCLIAdd %`
 3. Plugin sends: `@myproject/utils.lua ` to cursor terminal
 4. ✨ **Your cursor automatically moves to the cursor terminal**
 5. You can immediately type: "Explain this function"
 
 ### Before This Change
 
-1. Run `:CursorCodeAdd %`
+1. Run `:CursorCLIAdd %`
 2. File reference sent to cursor
 3. Cursor stayed in the original buffer
-4. You had to manually switch to cursor terminal (`:CursorCode` or window navigation)
+4. You had to manually switch to cursor terminal (`:CursorCLI` or window navigation)
 5. Then type your message
 
 ## Configuration
@@ -85,7 +85,7 @@ end
 
 ```vim
 " You're in utils.lua
-:CursorCodeAdd %
+:CursorCLIAdd %
 " Cursor moves to terminal automatically
 " Type: "What does this file do?"
 ```
@@ -94,7 +94,7 @@ end
 
 ```vim
 " You're in main.py, lines 45-60 selected in visual mode
-:CursorCodeSend
+:CursorCLISend
 " Cursor moves to terminal automatically
 " Type: "Can you optimize this function?"
 ```
@@ -104,7 +104,7 @@ end
 ```vim
 " In nvim-tree/oil/neo-tree
 " Cursor on config.lua
-:CursorCodeTreeAdd
+:CursorCLITreeAdd
 " Cursor moves to terminal automatically
 " Type: "Review this configuration file"
 ```

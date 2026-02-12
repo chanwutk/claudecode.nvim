@@ -101,10 +101,10 @@ Automated validation script that checks:
 
 ### Basic Commands
 ```vim
-:CursorCode              " Open cursor terminal
-:CursorCodeAdd %         " Send current file (@filename)
-:CursorCodeAdd % 10 20   " Send file with lines (@filename:10-20)
-:CursorCodeSend          " Send visual selection (in visual mode)
+:CursorCLI              " Open cursor terminal
+:CursorCLIAdd %         " Send current file (@filename)
+:CursorCLIAdd % 10 20   " Send file with lines (@filename:10-20)
+:CursorCLISend          " Send visual selection (in visual mode)
 ```
 
 ### Configuration
@@ -135,8 +135,8 @@ All passing:
 To fully verify with actual cursor-cli:
 1. Install cursor-cli
 2. Start Neovim with plugin
-3. Run `:CursorCode` (should open cursor)
-4. Run `:CursorCodeAdd %` (should type `@filename`)
+3. Run `:CursorCLI` (should open cursor)
+4. Run `:CursorCLIAdd %` (should type `@filename`)
 5. Check cursor terminal for the text
 
 ## Architecture

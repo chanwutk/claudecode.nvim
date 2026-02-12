@@ -8,15 +8,15 @@ Successfully modified the claudecode.nvim plugin to support Cursor CLI (`agent` 
 
 ### Original Requirements ✅
 1. **Trigger cursor-cli from inside Neovim**
-   - Command: `:CursorCode`
+   - Command: `:CursorCLI`
    - Launches: `agent` (cursor-cli command)
 
 2. **Reference the current file to cursor-cli**
-   - Command: `:CursorCodeAdd %`
+   - Command: `:CursorCLIAdd %`
    - Result: Types `@filename` into cursor terminal
 
 3. **Reference the current selected lines to cursor-cli**
-   - Command: `:CursorCodeSend` (in visual mode)
+   - Command: `:CursorCLISend` (in visual mode)
    - Result: Types `@filename:10-20` into cursor terminal
 
 ### Additional Requirements ✅
@@ -25,7 +25,7 @@ Successfully modified the claudecode.nvim plugin to support Cursor CLI (`agent` 
    - This is the actual cursor-cli command name
 
 5. **Avoid naming collisions with original plugin**
-   - All commands renamed: `ClaudeCode*` → `CursorCode*`
+   - All commands renamed: `ClaudeCode*` → `CursorCLI*`
    - Can install both plugins simultaneously
    - No keybinding conflicts (users choose their own)
 
@@ -34,7 +34,7 @@ Successfully modified the claudecode.nvim plugin to support Cursor CLI (`agent` 
 ### Code Changes (3 files)
 ```
 lua/claudecode/terminal.lua    - Default: "agent" + send_keys()
-lua/claudecode/init.lua        - CursorCode* commands + direct text input
+lua/claudecode/init.lua        - CursorCLI* commands + direct text input
 lua/claudecode/config.lua      - Updated comments
 ```
 
@@ -52,19 +52,19 @@ CHANGES_DIAGRAM.txt   - Visual architecture
 
 | Command | Function |
 |---------|----------|
-| `:CursorCode` | Toggle cursor terminal |
-| `:CursorCodeAdd <file>` | Add file to context |
-| `:CursorCodeAdd <file> <start> <end>` | Add file with line range |
-| `:CursorCodeSend` | Send visual selection |
-| `:CursorCodeTreeAdd` | Add from file explorer |
-| `:CursorCodeFocus` | Focus cursor terminal |
-| `:CursorCodeOpen` | Open cursor terminal |
-| `:CursorCodeClose` | Close cursor terminal |
-| `:CursorCodeStart` | Start integration |
-| `:CursorCodeStop` | Stop integration |
-| `:CursorCodeDiffAccept` | Accept diff |
-| `:CursorCodeDiffDeny` | Deny diff |
-| `:CursorCodeSelectModel` | Select model |
+| `:CursorCLI` | Toggle cursor terminal |
+| `:CursorCLIAdd <file>` | Add file to context |
+| `:CursorCLIAdd <file> <start> <end>` | Add file with line range |
+| `:CursorCLISend` | Send visual selection |
+| `:CursorCLITreeAdd` | Add from file explorer |
+| `:CursorCLIFocus` | Focus cursor terminal |
+| `:CursorCLIOpen` | Open cursor terminal |
+| `:CursorCLIClose` | Close cursor terminal |
+| `:CursorCLIStart` | Start integration |
+| `:CursorCLIStop` | Stop integration |
+| `:CursorCLIDiffAccept` | Accept diff |
+| `:CursorCLIDiffDeny` | Deny diff |
+| `:CursorCLISelectModel` | Select model |
 
 ## Installation
 
@@ -75,9 +75,9 @@ CHANGES_DIAGRAM.txt   - Visual architecture
   dependencies = { "folke/snacks.nvim" },
   config = true,
   keys = {
-    { "<leader>a", "<cmd>CursorCode<cr>", desc = "Cursor" },
-    { "<leader>aa", "<cmd>CursorCodeAdd %<cr>", desc = "Add buffer" },
-    { "<leader>as", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send" },
+    { "<leader>a", "<cmd>CursorCLI<cr>", desc = "Cursor" },
+    { "<leader>aa", "<cmd>CursorCLIAdd %<cr>", desc = "Add buffer" },
+    { "<leader>as", "<cmd>CursorCLISend<cr>", mode = "v", desc = "Send" },
   },
 }
 ```
@@ -99,7 +99,7 @@ return {
     "chanwutk/cursor-cli.nvim",
     opts = { terminal_cmd = "agent" },
     keys = {
-      { "<leader>aa", "<cmd>CursorCode<cr>", desc = "Cursor" },
+      { "<leader>aa", "<cmd>CursorCLI<cr>", desc = "Cursor" },
     },
   },
 }
@@ -120,7 +120,7 @@ vim.fn.chansend(job_id, "@filename:10-20 ")
 
 ### Architecture
 ```
-User runs: :CursorCodeAdd myfile.ts 10 20
+User runs: :CursorCLIAdd myfile.ts 10 20
     ↓
 Plugin formats: "@myfile.ts:10-20"
     ↓
@@ -147,13 +147,13 @@ Text appears in cursor terminal!
 - Default command: `agent` ✓
 - send_keys function: Exists ✓
 - @mention formatting: Implemented ✓
-- Command renaming: 13 CursorCode* commands ✓
+- Command renaming: 13 CursorCLI* commands ✓
 
 ### Manual Testing Required
 With cursor-cli installed:
-1. Run `:CursorCode` - should open agent terminal
-2. Run `:CursorCodeAdd %` - should type `@filename`
-3. Visual select + `:CursorCodeSend` - should type `@filename:lines`
+1. Run `:CursorCLI` - should open agent terminal
+2. Run `:CursorCLIAdd %` - should type `@filename`
+3. Visual select + `:CursorCLISend` - should type `@filename:lines`
 
 ## Files Changed
 
@@ -166,7 +166,7 @@ With cursor-cli installed:
 ### Git Summary
 ```
 Modified:
-  lua/claudecode/init.lua        - CursorCode* commands
+  lua/claudecode/init.lua        - CursorCLI* commands
   lua/claudecode/terminal.lua    - agent + send_keys()
   lua/claudecode/config.lua      - Comments
   README.md                      - Quick start
@@ -216,7 +216,7 @@ test_cursor_integration.sh - Validation script
 2. Install this fork: `"chanwutk/cursor-cli.nvim"`
 3. Optionally install original: `"coder/claudecode.nvim"`
 4. Configure with different keybindings if using both
-5. Use `:CursorCode` to start using cursor from Neovim
+5. Use `:CursorCLI` to start using cursor from Neovim
 
 ## Conclusion
 

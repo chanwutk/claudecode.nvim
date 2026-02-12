@@ -1,34 +1,34 @@
-# Fix for CursorCode Command Registration Issue
+# Fix for CursorCLI Command Registration Issue
 
 ## Problem
 Users reported the error:
 ```
-:CursorCode
-E492: Not an editor command: CursorCode
+:CursorCLI
+E492: Not an editor command: CursorCLI
 ```
 
 ## Root Cause
-The plugin was not automatically registering commands unless users explicitly called `require("cursorcode").setup()`. The plugin loader only called setup if `vim.g.cursorcode_auto_setup` was set, which most users wouldn't do when installing via package managers.
+The plugin was not automatically registering commands unless users explicitly called `require("cursor-cli").setup()`. The plugin loader only called setup if `vim.g.cursor-cli_auto_setup` was set, which most users wouldn't do when installing via package managers.
 
 ## Solution Implemented
 
 ### Changes Made
 
-1. **plugin/cursorcode.lua** - Auto-setup on load
+1. **plugin/cursor-cli.lua** - Auto-setup on load
    ```lua
-   -- Before: Only setup if vim.g.cursorcode_auto_setup was set
-   if vim.g.cursorcode_auto_setup then
+   -- Before: Only setup if vim.g.cursor-cli_auto_setup was set
+   if vim.g.cursor-cli_auto_setup then
      -- setup code
    end
    
    -- After: Always setup with defaults
    vim.defer_fn(function()
-     local config = vim.g.cursorcode_user_config or vim.g.cursorcode_auto_setup or {}
-     cursorcode.setup(config)
+     local config = vim.g.cursor-cli_user_config or vim.g.cursor-cli_auto_setup or {}
+     cursor-cli.setup(config)
    end, 0)
    ```
 
-2. **lua/cursorcode/init.lua** - Guard against duplicate commands
+2. **lua/cursor-cli/init.lua** - Guard against duplicate commands
    ```lua
    function M._create_commands()
      -- Guard against duplicate command creation
@@ -44,10 +44,10 @@ The plugin was not automatically registering commands unless users explicitly ca
 
 ### How It Works
 
-1. When Neovim loads the plugin (`plugin/cursorcode.lua`), it:
+1. When Neovim loads the plugin (`plugin/cursor-cli.lua`), it:
    - Sets the loaded flag
    - Schedules setup to run via `vim.defer_fn()`
-   - Looks for user config in `vim.g.cursorcode_user_config` or `vim.g.cursorcode_auto_setup`
+   - Looks for user config in `vim.g.cursor-cli_user_config` or `vim.g.cursor-cli_auto_setup`
    - Falls back to empty config `{}` if no user config provided
 
 2. The `setup()` function:
@@ -58,7 +58,7 @@ The plugin was not automatically registering commands unless users explicitly ca
 
 3. The `_create_commands()` function:
    - Checks if commands were already created
-   - Creates all CursorCode* commands
+   - Creates all CursorCLI* commands
    - Sets flag to prevent duplicate creation
 
 ### Benefits
@@ -75,20 +75,20 @@ The plugin was not automatically registering commands unless users explicitly ca
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",
+  name = "cursor-cli",
   dependencies = { "folke/snacks.nvim" },
 }
 ```
-Commands are available: `:CursorCode`, `:CursorCodeAdd`, etc.
+Commands are available: `:CursorCLI`, `:CursorCLIAdd`, etc.
 
 **Custom Config (still supported):**
 ```lua
 {
   "chanwutk/cursor-cli.nvim",
-  name = "cursorcode",
+  name = "cursor-cli",
   dependencies = { "folke/snacks.nvim" },
   config = function()
-    require("cursorcode").setup({
+    require("cursor-cli").setup({
       terminal_cmd = "cursor",
       log_level = "debug",
     })
@@ -105,8 +105,8 @@ Commands are available: `:CursorCode`, `:CursorCodeAdd`, etc.
 
 ### Files Modified
 
-1. `plugin/cursorcode.lua` - Auto-setup mechanism
-2. `lua/cursorcode/init.lua` - Duplicate command guard
+1. `plugin/cursor-cli.lua` - Auto-setup mechanism
+2. `lua/cursor-cli/init.lua` - Duplicate command guard
 3. `CURSORCODE_README.md` - Updated installation docs
 4. `QUICKSTART.md` - Updated quick start guide
 
@@ -114,10 +114,10 @@ Commands are available: `:CursorCode`, `:CursorCodeAdd`, etc.
 
 ```vim
 " After installing the plugin, these commands work immediately:
-:CursorCode           " ✓ Opens cursor terminal
-:CursorCodeAdd %      " ✓ Adds current file
-:CursorCodeSend       " ✓ Sends visual selection
-:CursorCodeTreeAdd    " ✓ Adds from file explorer
+:CursorCLI           " ✓ Opens cursor terminal
+:CursorCLIAdd %      " ✓ Adds current file
+:CursorCLISend       " ✓ Sends visual selection
+:CursorCLITreeAdd    " ✓ Adds from file explorer
 ```
 
 No additional configuration needed!

@@ -131,20 +131,20 @@ terminal.send_keys(mention_text .. " ")
   dependencies = { "folke/snacks.nvim" },
   config = true,  -- Defaults to cursor
   keys = {
-    { "<leader>ac", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-    { "<leader>ab", "<cmd>CursorCodeAdd %<cr>", desc = "Add buffer" },
-    { "<leader>as", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send selection" },
+    { "<leader>ac", "<cmd>CursorCLI<cr>", desc = "Toggle Cursor" },
+    { "<leader>ab", "<cmd>CursorCLIAdd %<cr>", desc = "Add buffer" },
+    { "<leader>as", "<cmd>CursorCLISend<cr>", mode = "v", desc = "Send selection" },
   },
 }
 ```
 
 ### Commands (all work unchanged)
 ```vim
-:CursorCode              " Open cursor terminal
-:CursorCodeAdd %         " Send @currentfile
-:CursorCodeAdd % 10 20   " Send @currentfile:10-20
-:CursorCodeSend          " Send visual selection
-:CursorCodeTreeAdd       " Add from file explorer
+:CursorCLI              " Open cursor terminal
+:CursorCLIAdd %         " Send @currentfile
+:CursorCLIAdd % 10 20   " Send @currentfile:10-20
+:CursorCLISend          " Send visual selection
+:CursorCLITreeAdd       " Add from file explorer
 ```
 
 ## Testing

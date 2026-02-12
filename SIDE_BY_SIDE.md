@@ -5,17 +5,17 @@ This fork can be installed alongside the original [coder/claudecode.nvim](https:
 ## How It Works
 
 ### Different Command Names
-This fork uses **`CursorCode*`** commands while the original uses **`ClaudeCode*`** commands:
+This fork uses **`CursorCLI*`** commands while the original uses **`ClaudeCode*`** commands:
 
 | This Fork (Cursor) | Original (Claude Code) |
 |-------------------|------------------------|
-| `:CursorCode` | `:ClaudeCode` |
-| `:CursorCodeAdd` | `:ClaudeCodeAdd` |
-| `:CursorCodeSend` | `:ClaudeCodeSend` |
-| `:CursorCodeTreeAdd` | `:ClaudeCodeTreeAdd` |
-| `:CursorCodeFocus` | `:ClaudeCodeFocus` |
-| `:CursorCodeStart` | `:ClaudeCodeStart` |
-| `:CursorCodeStop` | `:ClaudeCodeStop` |
+| `:CursorCLI` | `:ClaudeCode` |
+| `:CursorCLIAdd` | `:ClaudeCodeAdd` |
+| `:CursorCLISend` | `:ClaudeCodeSend` |
+| `:CursorCLITreeAdd` | `:ClaudeCodeTreeAdd` |
+| `:CursorCLIFocus` | `:ClaudeCodeFocus` |
+| `:CursorCLIStart` | `:ClaudeCodeStart` |
+| `:CursorCLIStop` | `:ClaudeCodeStop` |
 
 ### Different Plugin Sources
 - **Original**: `"coder/claudecode.nvim"`
@@ -55,9 +55,9 @@ return {
     },
     config = true,
     keys = {
-      { "<leader>cu", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-      { "<leader>ua", "<cmd>CursorCodeAdd %<cr>", desc = "Add to Cursor" },
-      { "<leader>us", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Send to Cursor" },
+      { "<leader>cu", "<cmd>CursorCLI<cr>", desc = "Toggle Cursor" },
+      { "<leader>ua", "<cmd>CursorCLIAdd %<cr>", desc = "Add to Cursor" },
+      { "<leader>us", "<cmd>CursorCLISend<cr>", mode = "v", desc = "Send to Cursor" },
     },
   },
 }
@@ -74,8 +74,8 @@ Use different leader key prefixes for each plugin:
 { "<leader>cla", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add to Claude" },
 
 -- Cursor: <leader>cu* (cu = CUrsor)
-{ "<leader>cu", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-{ "<leader>cua", "<cmd>CursorCodeAdd %<cr>", desc = "Add to Cursor" },
+{ "<leader>cu", "<cmd>CursorCLI<cr>", desc = "Toggle Cursor" },
+{ "<leader>cua", "<cmd>CursorCLIAdd %<cr>", desc = "Add to Cursor" },
 ```
 
 ### Option 2: Separate Leader Keys
@@ -85,8 +85,8 @@ Use different leader key prefixes for each plugin:
 { "<leader>ca", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add to Claude" },
 
 -- Cursor: <leader>a* (a = Agent)
-{ "<leader>a", "<cmd>CursorCode<cr>", desc = "Toggle Cursor" },
-{ "<leader>aa", "<cmd>CursorCodeAdd %<cr>", desc = "Add to Cursor" },
+{ "<leader>a", "<cmd>CursorCLI<cr>", desc = "Toggle Cursor" },
+{ "<leader>aa", "<cmd>CursorCLIAdd %<cr>", desc = "Add to Cursor" },
 ```
 
 ### Option 3: Conditional Keybindings
@@ -98,7 +98,7 @@ if use_cursor then
   return {
     "chanwutk/cursor-cli.nvim",
     keys = {
-      { "<leader>ai", "<cmd>CursorCode<cr>", desc = "Toggle AI" },
+      { "<leader>ai", "<cmd>CursorCLI<cr>", desc = "Toggle AI" },
     },
   }
 else
@@ -140,11 +140,11 @@ This is fine - they share these dependencies without issues.
 ```lua
 -- Open both side by side
 :ClaudeCode    " Opens Claude in right split
-:CursorCode    " Opens Cursor in another split
+:CursorCLI    " Opens Cursor in another split
 
 -- Send same file to both
 :ClaudeCodeAdd %
-:CursorCodeAdd %
+:CursorCLIAdd %
 
 -- Compare responses
 " Navigate between Claude and Cursor splits
@@ -154,10 +154,10 @@ This is fine - they share these dependencies without issues.
 ```lua
 -- Close Claude, use Cursor
 :ClaudeCodeClose
-:CursorCode
+:CursorCLI
 
 -- Close Cursor, use Claude
-:CursorCodeClose
+:CursorCLIClose
 :ClaudeCode
 ```
 
@@ -187,9 +187,9 @@ return {
     config = true,
     keys = {
       -- Use 'a' prefix for Cursor (Agent)
-      { "<leader>aa", "<cmd>CursorCode<cr>", desc = "Cursor" },
-      { "<leader>ab", "<cmd>CursorCodeAdd %<cr>", desc = "Cursor: Add" },
-      { "<leader>as", "<cmd>CursorCodeSend<cr>", mode = "v", desc = "Cursor: Send" },
+      { "<leader>aa", "<cmd>CursorCLI<cr>", desc = "Cursor" },
+      { "<leader>ab", "<cmd>CursorCLIAdd %<cr>", desc = "Cursor: Add" },
+      { "<leader>as", "<cmd>CursorCLISend<cr>", mode = "v", desc = "Cursor: Send" },
     },
   },
 }
@@ -212,7 +212,7 @@ Make sure each plugin explicitly sets `terminal_cmd`:
 - This fork: `terminal_cmd = "agent"`
 
 ### Both Terminals Opening
-This is expected! They're separate plugins managing separate terminals. Use `:ClaudeCodeClose` or `:CursorCodeClose` to close the one you don't need.
+This is expected! They're separate plugins managing separate terminals. Use `:ClaudeCodeClose` or `:CursorCLIClose` to close the one you don't need.
 
 ## Summary
 
