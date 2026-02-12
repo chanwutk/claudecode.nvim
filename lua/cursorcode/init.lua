@@ -206,13 +206,8 @@ function M.setup(opts)
     end
   end
 
-  -- Setup selection tracking if enabled
-  if M.state.config.track_selection then
-    local selection_ok, selection_module = pcall(require, "cursorcode.selection")
-    if selection_ok and type(selection_module.setup) == "function" then
-      selection_module.setup(M.state.config)
-    end
-  end
+  -- Note: Selection tracking is disabled for cursorcode (uses direct text input)
+  -- The cursorcode plugin captures selections on-demand via commands like CursorCodeSend
 
   -- Create commands
   M._create_commands()

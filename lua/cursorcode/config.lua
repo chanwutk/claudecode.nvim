@@ -11,7 +11,7 @@ M.defaults = {
   terminal_cmd = nil, -- Will default to "agent" (cursor-cli command) if not set
   env = {}, -- Custom environment variables for Cursor terminal
   log_level = "info",
-  track_selection = true,
+  track_selection = false, -- Cursorcode doesn't need selection tracking (uses direct text input)
   -- When true, focus Cursor terminal after a successful send
   focus_after_send = false,
   visual_demotion_delay_ms = 50, -- Milliseconds to wait before demoting a visual selection

@@ -1,6 +1,6 @@
----@brief Centralized logger for Claude Code Neovim integration.
+---@brief Centralized logger for Cursor Code Neovim integration.
 -- Provides level-based logging.
----@module 'claudecode.logger'
+---@module 'cursorcode.logger'
 local M = {}
 
 M.levels = {
@@ -30,7 +30,7 @@ function M.setup(plugin_config)
     current_log_level_value = level_values[conf.log_level]
   else
     vim.notify(
-      "ClaudeCode Logger: Invalid or missing log_level in configuration (received: "
+      "CursorCode Logger: Invalid or missing log_level in configuration (received: "
         .. tostring(conf and conf.log_level)
         .. "). Defaulting to INFO.",
       vim.log.levels.WARN
@@ -44,7 +44,7 @@ local function log(level, component, message_parts)
     return
   end
 
-  local prefix = "[ClaudeCode]"
+  local prefix = "[CursorCode]"
   if component then
     prefix = prefix .. " [" .. component .. "]"
   end
@@ -74,9 +74,9 @@ local function log(level, component, message_parts)
   -- "nvim_echo must not be called in a fast event context" errors
   vim.schedule(function()
     if level == M.levels.ERROR then
-      vim.notify(prefix .. " " .. message, vim.log.levels.ERROR, { title = "ClaudeCode Error" })
+      vim.notify(prefix .. " " .. message, vim.log.levels.ERROR, { title = "CursorCode Error" })
     elseif level == M.levels.WARN then
-      vim.notify(prefix .. " " .. message, vim.log.levels.WARN, { title = "ClaudeCode Warning" })
+      vim.notify(prefix .. " " .. message, vim.log.levels.WARN, { title = "CursorCode Warning" })
     else
       -- For INFO, DEBUG, TRACE, use nvim_echo to avoid flooding notifications,
       -- to make them appear in :messages
