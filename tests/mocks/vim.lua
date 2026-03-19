@@ -441,6 +441,11 @@ local vim = {
       return path:gsub("~", "/home/user")
     end,
 
+    ---@return table<string, string>
+    environ = function()
+      return { PATH = "/usr/bin", HOME = "/home/user" }
+    end,
+
     filereadable = function(path)
       -- Check if file actually exists
       local file = io.open(path, "r")

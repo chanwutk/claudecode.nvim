@@ -43,8 +43,8 @@ end
 ---@return table
 local function build_opts(config, env_table, focus)
   focus = utils.normalize_focus(focus)
-  return {
-    env = env_table,
+  local job_env = utils.prepare_job_env(env_table)
+  local opts = {
     cwd = config.cwd,
     start_insert = focus,
     auto_insert = focus,
@@ -69,6 +69,10 @@ local function build_opts(config, env_table, focus)
       },
     }, config.snacks_win_opts or {}),
   }
+  if job_env then
+    opts.env = job_env
+  end
+  return opts
 end
 
 function M.setup()

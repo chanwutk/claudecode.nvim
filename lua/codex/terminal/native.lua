@@ -71,8 +71,7 @@ local function open_terminal(cmd_string, env_table, effective_config, focus)
     term_cmd_arg = { cmd_string }
   end
 
-  jobid = vim.fn.termopen(term_cmd_arg, {
-    env = env_table,
+  local term_opts = {
     cwd = effective_config.cwd,
     on_exit = function(job_id, _, _)
       vim.schedule(function()
@@ -100,7 +99,13 @@ local function open_terminal(cmd_string, env_table, effective_config, focus)
         end
       end)
     end,
-  })
+  }
+  local job_env = utils.prepare_job_env(env_table)
+  if job_env then
+    term_opts.env = job_env
+  end
+
+  jobid = vim.fn.termopen(term_cmd_arg, term_opts)
 
   if not jobid or jobid == 0 then
     vim.notify("Failed to open native terminal.", vim.log.levels.ERROR)

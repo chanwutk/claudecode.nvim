@@ -5,6 +5,7 @@
 local M = {}
 
 local logger = require("codex.logger")
+local utils = require("codex.utils")
 
 local jobid = nil
 local config
@@ -99,9 +100,8 @@ function M.open(cmd_string, env_table)
 
   cwd_for_jobstart = cwd_for_jobstart or (vim.fn.getcwd and vim.fn.getcwd() or nil)
 
-  jobid = vim.fn.jobstart(cmd_parts, {
+  local job_opts = {
     detach = true,
-    env = env_table,
     cwd = cwd_for_jobstart,
     on_exit = function(job_id, exit_code, _)
       vim.schedule(function()
@@ -110,7 +110,13 @@ function M.open(cmd_string, env_table)
         end
       end)
     end,
-  })
+  }
+  local job_env = utils.prepare_job_env(env_table)
+  if job_env then
+    job_opts.env = job_env
+  end
+
+  jobid = vim.fn.jobstart(cmd_parts, job_opts)
 
   if not jobid or jobid <= 0 then
     vim.notify("Failed to start external terminal with command: " .. full_command, vim.log.levels.ERROR)
@@ -133,7 +139,7 @@ function M.simple_toggle(cmd_string, env_table, effective_config)
   if is_valid() then
     M.close()
   else
-    M.open(cmd_string, env_table, effective_config, true)
+    M.open(cmd_string, env_table)
   end
 end
 
